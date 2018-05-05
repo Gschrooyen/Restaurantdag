@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class HelperMethods {
-    public static void ChangeScene(Event e, String path) throws IOException {      
+class HelperMethods {
+    static void ChangeScene(Event e, String path) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(HelperMethods.class.getClassLoader().getResource(path));
         Parent viewParent = loader.load();
@@ -31,7 +31,7 @@ public class HelperMethods {
         window.show();
     }
 
-    public static <T> void ChangeSceneWithData(Event e, String path, T dataToInit) throws IOException {
+    static <T> void ChangeSceneWithData(Event e, String path, T dataToInit) throws IOException {
         if (dataToInit instanceof Bestelling || dataToInit instanceof Gerecht || dataToInit instanceof Klant || dataToInit instanceof Restaurantdag) {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(HelperMethods.class.getClassLoader().getResource(path));
@@ -47,7 +47,7 @@ public class HelperMethods {
         }
     }
 
-    public static void setbtnActive(TableView tbl, Button button, MouseEvent event, Method methodToEdit, Object o) throws IllegalAccessException, InvocationTargetException {
+    static void setbtnActive(TableView tbl, Button button, MouseEvent event, Method methodToEdit, Object o) throws IllegalAccessException, InvocationTargetException {
         if (event.getClickCount() == 2) {
             methodToEdit.invoke(o, event);
         } else {
