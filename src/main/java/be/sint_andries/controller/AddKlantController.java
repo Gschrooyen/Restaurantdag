@@ -12,6 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.IntegerStringConverter;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
@@ -21,7 +22,9 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-
+/**
+ * controller to AddKlantView
+ */
 public class AddKlantController extends Controller {
 
     public TableView<Bestelling> tblDessert;
@@ -40,8 +43,17 @@ public class AddKlantController extends Controller {
     private TextField txtNaam;
     private Klant initData;
 
-    public void Back(Event event) throws IOException, SQLException {
-        HelperMethods.ChangeSceneWithData(event, "be/sint_andries/view/KlantOverviewView.fxml", getResto());
+
+    public void Back(Event event) {
+        try {
+            HelperMethods.ChangeSceneWithData(event, "be/sint_andries/view/KlantOverviewView.fxml", getResto());
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Could not find KlantOverview.fxml", "IOException", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "IOException", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
 
     }
 
@@ -66,6 +78,7 @@ public class AddKlantController extends Controller {
             tblDessert.setItems(getBestellingen(false));
 
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "SQLException", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
         cbxTijdstip.getSelectionModel().select(initData.getTijdstip());
@@ -110,9 +123,19 @@ public class AddKlantController extends Controller {
 
     }
 
-    public void Overzicht(Event event) throws IOException, SQLException {
-        addKlant();
-        HelperMethods.ChangeScene(event, "be/sint_andries/view/KlantOverviewView.fxml");
+    public void Overzicht(Event event) {
+        try {
+            addKlant();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "SQLException", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+        try {
+            HelperMethods.ChangeScene(event, "be/sint_andries/view/KlantOverviewView.fxml");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Could not find KlantOverviewView.fxml", "IOException", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
 
     public void Volgende(Event e) throws IOException, SQLException {

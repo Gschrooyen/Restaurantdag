@@ -13,6 +13,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
@@ -21,7 +22,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+/**
+ * the controler to KlantOverviewView
+ */
 public class KlantOverviewController extends Controller {
+
     @FXML
     private Button btnBewerk;
     @FXML
@@ -34,21 +39,61 @@ public class KlantOverviewController extends Controller {
     private TableColumn<Klant, SimpleStringProperty> colGroep;
     private Restaurantdag initdata = null;
 
-
-    public void Back(Event event) throws IOException {
-        HelperMethods.ChangeScene(event, "be/sint_andries/view/HomeScreenView.fxml");
+    /**
+     * changes the scene to the HomeScreenView, shows an error message when the fxml cannot be loaded.
+     * @param event the event that called this method.
+     */
+    public void Back(Event event){
+        try {
+            HelperMethods.ChangeScene(event, "be/sint_andries/view/HomeScreenView.fxml");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Could not find HomeScreenView.fxml", "IOException", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    /**
+     * changes the scene to the AddKlantView to add a new person, shows an error message when the fxml cannot be loaded.
+     * @param event the event that called this method.
+     */
+    public void Nieuw(Event event) {
+        try {
+            HelperMethods.ChangeScene(event, "be/sint_andries/view/AddKlantView.fxml");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Could not find AddKlantView.fxml", "IOException", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    /**
+     * changes the scene to the GerechtOverzichtView to edit a person, shows an error message when the fxml cannot be loaded.
+     * @param event the event that called this method.
+     */
+    public void Bewerk(Event event) {
+        try {
+            HelperMethods.ChangeSceneWithData(event, "be/sint_andries/view/AddKlantView.fxml", tblKlant.getSelectionModel().getSelectedItem());
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Could not find AddKlantView.fxml", "IOException", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
 
-    public void Nieuw(Event event) throws IOException {
-        HelperMethods.ChangeScene(event, "be/sint_andries/view/AddKlantView.fxml");
-    }
+    /**
+     * checks if something is selected, activates the "bewerk" button if true
+     * @param event the event that called this method
+     */
+    public void checkBewerk(MouseEvent event)  {
+        try {
+            HelperMethods.setbtnActive(tblKlant, btnBewerk, event, this.getClass().getMethod("Bewerk", Event.class), this);
+        } catch (IllegalAccessException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "IllegalAccesException", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "InvocationTargetException", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "NoSuchMethodExcetion", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
 
-    public void Bewerk(Event event) throws IOException {
-        HelperMethods.ChangeSceneWithData(event, "be/sint_andries/view/AddKlantView.fxml", tblKlant.getSelectionModel().getSelectedItem());
-    }
-
-    public void checkBewerk(MouseEvent event) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        HelperMethods.setbtnActive(tblKlant, btnBewerk, event, this.getClass().getMethod("Bewerk", Event.class), this);
+        }
     }
 
     @Override
@@ -82,15 +127,22 @@ public class KlantOverviewController extends Controller {
                 initdata = new Restaurantdag(rs.getDate("Datum").toLocalDate(), rs.getString("Naam"), rs.getInt("Id"));
                 initialize(url, rb);
             } catch (SQLException e1) {
-                e1.printStackTrace();
+                JOptionPane.showMessageDialog(null, e1.getMessage(), "SQLException", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
             }
         }
 
     }
 
+    /**
+     * get a list of all customers from the database
+     * @return ObservableList of all customers
+     * @throws Exception thrown when initdata == null
+     */
     private ObservableList<Klant> getKlanten() throws Exception {
         if (initdata == null) {
             throw new Exception("Restaurantdag is niet ingesteld");
+
         }
         ObservableList<Klant> klanten = FXCollections.observableArrayList();
         try {
@@ -132,6 +184,7 @@ public class KlantOverviewController extends Controller {
                 klanten.add(k);
             }
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "SQLException", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
 

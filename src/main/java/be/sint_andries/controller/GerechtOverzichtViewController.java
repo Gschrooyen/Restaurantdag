@@ -106,7 +106,7 @@ public class GerechtOverzichtViewController extends Controller {
             }
         });
 
-        tblOverview.setItems(initGerechten());
+        tblOverview.setItems(initGerechten().sorted());
 
     }
 
