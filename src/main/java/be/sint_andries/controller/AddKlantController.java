@@ -122,7 +122,7 @@ public class AddKlantController extends Controller {
 
     private ObservableList<Tijdstip> tijdstippen() throws SQLException {
         ObservableList<Tijdstip> tijden = FXCollections.observableArrayList();
-        PreparedStatement preptijden = Main.connection.prepareStatement("SELECT Uur, Minuut, Id FROM Tijdstip WHERE RestaurantdagId = ?");
+        PreparedStatement preptijden = Main.connection.prepareStatement("SELECT Uur, Minuut, Id FROM Tijdstip where RestaurantdagId = ?");
         preptijden.setInt(1, getRestoId());
         ResultSet rsTijd = preptijden.executeQuery();
         while (rsTijd.next()) {
@@ -170,7 +170,7 @@ public class AddKlantController extends Controller {
     }
 
     private void updateBestelling(TableView<Bestelling> tableView) throws SQLException {
-        PreparedStatement prepUpdateBestelling = Main.connection.prepareStatement("UPDATE GerechtBestelling SET Aantal = ? WHERE BestellingsId = ?");
+        PreparedStatement prepUpdateBestelling = Main.connection.prepareStatement("UPDATE GerechtBestelling SET Aantal = ? where BestellingsId = ?");
         for (Bestelling b :
                 tableView.getItems()) {
             if (b.getId() != null) {
@@ -186,7 +186,7 @@ public class AddKlantController extends Controller {
     }
 
     private void insertBestellingen(ObservableList<Bestelling> bestellings, int klantId) throws SQLException {
-        PreparedStatement prepBestelling = Main.connection.prepareStatement("INSERT INTO GerechtBestelling VALUES (?,NULL, ?, ?)");
+        PreparedStatement prepBestelling = Main.connection.prepareStatement("INSERT INTO GerechtBestelling VALUES (?,null, ?, ?)");
         for (Bestelling g :
                 bestellings) {
             if (g.getAantal() != 0) {
@@ -204,17 +204,17 @@ public class AddKlantController extends Controller {
 
     private Restaurantdag getResto() throws SQLException {
         if (initData != null) {
-            PreparedStatement prepInint = Main.connection.prepareStatement("SELECT * FROM Restaurantdag WHERE Id = ?");
+            PreparedStatement prepInint = Main.connection.prepareStatement("SELECT * FROM Restaurantdag where Id = ?");
             prepInint.setInt(1, initData.getId());
             ResultSet rsInit = prepInint.executeQuery();
-            if (rsInit.next()) {
+            rsInit.next();
                 int id = rsInit.getInt(1);
                 String naam = rsInit.getString(2);
                 LocalDate Datum = rsInit.getDate(3).toLocalDate();
                 return new Restaurantdag(Datum, naam, id);
-            }
+
         }
-        ResultSet rs = Main.connection.prepareStatement("SELECT * FROM Restaurantdag ORDER BY Datum DESC").executeQuery();
+        ResultSet rs = Main.connection.prepareStatement("SELECT * FROM Restaurantdag order by Datum desc").executeQuery();
         rs.next();
         int id = rs.getInt(1);
         String naam = rs.getString(2);
@@ -238,7 +238,7 @@ public class AddKlantController extends Controller {
                 int id = rsGerecht.getInt("Id");
                 if (rsGerecht.getBoolean("IsDessert")) {
                     Double prijs = rsGerecht.getDouble("Prijs");
-                    Gerecht ger = new Gerecht(naam, prijs, rsGerecht.getBoolean("IsKind"), id);
+                    Gerecht ger = new Gerecht(naam, prijs, rsGerecht.getBoolean("IsKind") ,id);
                     if (initData != null) {
                         bestellingen.add(new Bestelling(ger, 0, initData.getId()));
                     } else {
@@ -279,7 +279,7 @@ public class AddKlantController extends Controller {
                         bestellingen.removeIf(best -> best.getGerecht().equals(ger));
                         bestellingen.add(b);
                     } else {
-                        Gerecht ger = new Gerecht(naam, rsGerechtPersoonlijk.getDouble(4), rsGerechtPersoonlijk.getBoolean(5), id);
+                        Gerecht ger = new Gerecht(naam, rsGerechtPersoonlijk.getDouble(4), rsGerechtPersoonlijk.getBoolean(5),id);
                         b = new Bestelling(ger, aantal, initData.getId(), bestellingsId);
                         bestellingen.removeIf(best -> best.getGerecht().equals(ger));
                         bestellingen.add(b);

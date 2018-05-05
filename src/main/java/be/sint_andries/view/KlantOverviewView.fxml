@@ -1,46 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="746.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9"
-            fx:controller="be.sint_andries.controller.KlantOverviewController">
-    <children>
-        <VBox alignment="TOP_CENTER" prefHeight="746.0" prefWidth="600.0">
+<BorderPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.sint_andries.controller.KlantOverviewController">
+   <center>
+        <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
             <children>
                 <Label text="Overzicht Klanten">
                     <font>
-                        <Font size="24.0"/>
+                        <Font size="24.0" />
                     </font>
                     <VBox.margin>
-                        <Insets bottom="20.0" top="20.0"/>
+                        <Insets bottom="20.0" top="20.0" />
                     </VBox.margin>
                 </Label>
                 <TableView fx:id="tblKlant" onMouseClicked="#checkBewerk" prefHeight="480.0" prefWidth="600.0">
                     <columns>
-                        <TableColumn fx:id="colNaam" prefWidth="249.0" text="Naam"/>
-                        <TableColumn fx:id="colGroep" prefWidth="222.0" text="Groepsnaam"/>
-                        <TableColumn fx:id="colPers" prefWidth="128.0" text="aantal personen"/>
+                        <TableColumn fx:id="colNaam" prefWidth="249.0" text="Naam" />
+                        <TableColumn fx:id="colGroep" prefWidth="222.0" text="Groepsnaam" />
+                        <TableColumn fx:id="colPers" prefWidth="128.0" text="aantal personen" />
                     </columns>
                 </TableView>
                 <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                     <children>
                         <Button fx:id="btnBack" mnemonicParsing="false" onMouseClicked="#Back" text="Back">
                             <HBox.margin>
-                                <Insets right="20.0"/>
+                                <Insets right="20.0" />
                             </HBox.margin>
                         </Button>
-                        <Button fx:id="btnBewerk" disable="true" mnemonicParsing="false" onMouseClicked="#Bewerk"
-                                text="Bewerk">
+                        <Button fx:id="btnBewerk" disable="true" mnemonicParsing="false" onMouseClicked="#Bewerk" text="Bewerk">
                             <HBox.margin>
-                                <Insets right="20.0"/>
+                                <Insets right="20.0" />
                             </HBox.margin>
                         </Button>
-                        <Button fx:id="btnNew" mnemonicParsing="false" onMouseClicked="#Nieuw" text="Nieuw"/>
+                        <Button fx:id="btnNew" mnemonicParsing="false" onMouseClicked="#Nieuw" text="Nieuw" />
                     </children>
                 </HBox>
             </children>
         </VBox>
-    </children>
-</AnchorPane>
+   </center>
+</BorderPane>
