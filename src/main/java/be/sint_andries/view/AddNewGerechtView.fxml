@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="434.0" prefWidth="611.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.sint_andries.controller.AddNewGerechtViewController">
+    <children>
+        <VBox prefHeight="423.0" prefWidth="611.0">
+            <children>
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="605.0">
+                    <children>
+                        <Label text="Nieuw Gerecht">
+                            <font>
+                                <Font size="24.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+                <VBox prefHeight="197.0" prefWidth="611.0">
+                    <children>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                            <children>
+                                <Label text="Naam">
+                                    <HBox.margin>
+                                        <Insets right="15.0" />
+                                    </HBox.margin>
+                                </Label>
+                                <TextField fx:id="txtNaam" />
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                            <children>
+                                <Label text="Prijs">
+                                    <HBox.margin>
+                                        <Insets right="15.0" />
+                                    </HBox.margin>
+                                </Label>
+                                <TextField fx:id="txtPrijs" />
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                            <children>
+                                <CheckBox fx:id="cbxDessert" mnemonicParsing="false" onMouseClicked="#enablePrijs" text="Dessert" />
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <CheckBox fx:id="cbxKind" mnemonicParsing="false" text="Kind" />
+               </children></HBox>
+                <HBox alignment="CENTER" prefHeight="133.0" prefWidth="612.0">
+                    <children>
+                        <Button fx:id="btnBack" mnemonicParsing="false" onMouseClicked="#Back" text="Back">
+                            <HBox.margin>
+                                <Insets right="20.0" />
+                            </HBox.margin>
+                        </Button>
+                        <Button fx:id="btnOverzicht" mnemonicParsing="false" onMouseClicked="#Overzicht" text="Opslaan en naar overzicht">
+                            <HBox.margin>
+                                <Insets right="20.0" />
+                            </HBox.margin>
+                        </Button>
+                        <Button fx:id="btnVolgende" mnemonicParsing="false" onAction="#Volgende" text="Opslaan en nog een toevoegen" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

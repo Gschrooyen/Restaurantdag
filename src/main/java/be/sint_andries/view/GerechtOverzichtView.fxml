@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="713.0" prefWidth="518.0" xmlns="http://javafx.com/javafx/9"
+            fx:controller="be.sint_andries.controller.GerechtOverzichtViewController">
+    <children>
+        <VBox alignment="TOP_CENTER" prefHeight="724.0" prefWidth="526.0">
+            <children>
+                <Label text="Overzicht gerechten">
+                    <font>
+                        <Font size="24.0"/>
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="20.0" top="20.0"/>
+                    </VBox.margin>
+                </Label>
+                <TableView fx:id="tblOverview" onMouseClicked="#BewerkActive" prefHeight="602.0" prefWidth="526.0">
+                    <columns>
+                        <TableColumn fx:id="colNaam" prefWidth="256.0" text="naam"/>
+                        <TableColumn fx:id="colPrijs" prefWidth="171.0" text="prijs"/>
+                        <TableColumn fx:id="colDessert" prefWidth="98.0" text="is Dessert"/>
+                    </columns>
+                </TableView>
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="btnBack" mnemonicParsing="false" onMouseClicked="#Back" text="Back">
+                            <HBox.margin>
+                                <Insets right="20.0"/>
+                            </HBox.margin>
+                        </Button>
+                        <Button fx:id="btnBewerk" disable="true" mnemonicParsing="false" onMouseClicked="#Bewerk"
+                                text="Bewerk">
+                            <HBox.margin>
+                                <Insets right="20.0"/>
+                            </HBox.margin>
+                        </Button>
+                        <Button fx:id="btnNew" mnemonicParsing="false" onMouseClicked="#Nieuw" text="Nieuw"/>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

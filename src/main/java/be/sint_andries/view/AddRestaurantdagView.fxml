@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<BorderPane prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.sint_andries.controller.AddRestaurantdagViewController">
+   <center>
+        <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="976.0" prefWidth="902.0" BorderPane.alignment="CENTER">
+            <children>
+                <HBox alignment="CENTER" prefHeight="60.0" prefWidth="902.0">
+                    <children>
+                        <Label text="Naam">
+                            <opaqueInsets>
+                                <Insets />
+                            </opaqueInsets>
+                            <HBox.margin>
+                                <Insets right="30.0" />
+                            </HBox.margin>
+                        </Label>
+                        <TextField fx:id="txtNaam" />
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" prefHeight="44.0" prefWidth="902.0">
+                    <children>
+                        <Label text="Datum">
+                            <HBox.margin>
+                                <Insets right="20.0" />
+                            </HBox.margin>
+                        </Label>
+                        <DatePicker fx:id="dpDatum" showWeekNumbers="true" />
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" prefHeight="265.0" prefWidth="902.0">
+                    <children>
+                        <TextField fx:id="txtUren" onKeyReleased="#enterpressed" prefHeight="26.0" prefWidth="47.0" />
+                        <Label text=":" />
+                        <TextField fx:id="txtMinuten" onKeyReleased="#enterpressed" prefHeight="26.0" prefWidth="46.0" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                            <children>
+                                <Button fx:id="btnAddTijdstip" mnemonicParsing="false" onAction="#addTijd" text="-----&gt;" />
+                                <Button fx:id="btnRemoveTijdstip" mnemonicParsing="false" onAction="#remTijd" text="&lt;-----">
+                                    <VBox.margin>
+                                        <Insets top="20.0" />
+                                    </VBox.margin>
+                                </Button>
+                            </children>
+                        </VBox>
+                        <ListView fx:id="lvTijdstippen" prefHeight="200.0" prefWidth="200.0" />
+                    </children>
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                </HBox>
+                <Label text="Hoofdgerechten">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+                <HBox alignment="CENTER" prefHeight="186.0" prefWidth="902.0">
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                    <children>
+                        <ListView fx:id="lvAlleHoofd" prefHeight="200.0" prefWidth="200.0">
+                            <HBox.margin>
+                                <Insets />
+                            </HBox.margin>
+                        </ListView>
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                            <children>
+                                <Button fx:id="btnVoegHoofdtoe" mnemonicParsing="false" onAction="#addHoofd" text="-------&gt;">
+                                    <VBox.margin>
+                                        <Insets bottom="30.0" />
+                                    </VBox.margin>
+                                </Button>
+                                <Button fx:id="btnVerwijderHoofd" mnemonicParsing="false" onAction="#delHoofd" text="&lt;-------" />
+                            </children>
+                        </VBox>
+                        <ListView fx:id="lvGeselHoofd" prefHeight="200.0" prefWidth="200.0" />
+                    </children>
+                </HBox>
+                <Label text="Desserten">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </Label>
+                <HBox alignment="CENTER" prefHeight="186.0" prefWidth="902.0">
+                    <children>
+                        <ListView fx:id="lvAlleDes" prefHeight="200.0" prefWidth="200.0">
+                            <HBox.margin>
+                                <Insets />
+                            </HBox.margin>
+                        </ListView>
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                            <children>
+                                <Button fx:id="btnVoegDesToe" mnemonicParsing="false" onAction="#addDes" text="-------&gt;">
+                                    <VBox.margin>
+                                        <Insets bottom="30.0" />
+                                    </VBox.margin>
+                                </Button>
+                                <Button fx:id="btnVerwijderDes" mnemonicParsing="false" onAction="#delDes" text="&lt;-------" />
+                            </children>
+                        </VBox>
+                        <ListView fx:id="lvGeselDes" prefHeight="200.0" prefWidth="200.0" />
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" prefHeight="128.0" prefWidth="902.0">
+                    <children>
+                        <Button fx:id="btnBack" mnemonicParsing="false" onMouseClicked="#Back" text="Back">
+                            <HBox.margin>
+                                <Insets right="30.0" />
+                            </HBox.margin>
+                        </Button>
+                        <Button fx:id="btnOpslaan" mnemonicParsing="false" onAction="#Opslaan" text="Opslaan" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+   </center>
+</BorderPane>
