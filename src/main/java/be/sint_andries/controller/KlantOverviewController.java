@@ -112,7 +112,6 @@ public class KlantOverviewController extends Controller {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        System.out.println(initdata);
         //set up the columns
         colNaam.setCellValueFactory(new PropertyValueFactory<>("naam"));
         colGroep.setCellValueFactory(new PropertyValueFactory<>("groepsNaam"));

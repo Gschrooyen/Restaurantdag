@@ -3,6 +3,8 @@ package be.sint_andries.controller;
 
 import be.sint_andries.Main;
 import be.sint_andries.model.*;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -10,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.KeyCode;
 import javafx.util.converter.IntegerStringConverter;
 
 import javax.swing.*;
@@ -31,6 +34,9 @@ public class AddKlantController extends Controller {
     public TableColumn<Bestelling, Gerecht> colDessert;
     public TableColumn<Bestelling, Integer> colDessertAantal;
     public ComboBox<Tijdstip> cbxTijdstip;
+    public TableColumn<Bestelling, Double> colTotaal;
+    public Label lblTotaalPers;
+    public Label lblTotaalPrijs;
     @FXML
     private TableView<Bestelling> tblHoofd;
     @FXML
@@ -59,9 +65,42 @@ public class AddKlantController extends Controller {
 
     public void edit(TableColumn.CellEditEvent e) {
         Bestelling b = (Bestelling) e.getTableView().getSelectionModel().getSelectedItem();
-        System.out.println(b);
-        System.out.println(e.getNewValue());
         b.setAantal((Integer) e.getNewValue());
+
+
+
+        txtNaam.focusTraversableProperty().setValue(false);
+        txtGroepsnaam.focusTraversableProperty().setValue(false);
+        cbxTijdstip.focusTraversableProperty().setValue(false);
+        tblHoofd.focusTraversableProperty().setValue(false);
+        if (e.getTableView() == tblDessert){
+            if (e.getTableView().getSelectionModel().getSelectedIndex() != e.getTableView().getItems().size()-1){
+                e.getTableView().getSelectionModel().selectBelowCell();
+            }else {
+                e.getTableView().getSelectionModel().clearSelection();
+            }
+
+        }else {
+            if (e.getTableView().getSelectionModel().getSelectedIndex() != e.getTableView().getItems().size() - 1) {
+                tblHoofd.focusTraversableProperty().setValue(true);
+                e.getTableView().getSelectionModel().selectBelowCell();
+            } else {
+
+                tblDessert.getSelectionModel().selectFirst();
+                tblHoofd.getSelectionModel().clearSelection();
+                tblDessert.edit(0, colDessertAantal);
+            }
+            tblHoofd.refresh();
+            int totaalPers = 0;
+            Double totaalPrijs = 0.0;
+            for (Bestelling bestelling : tblHoofd.getItems()) {
+                totaalPers += bestelling.getAantal();
+                totaalPrijs += bestelling.getGerecht().getPrijs().doubleValue() * bestelling.getAantal();
+            }
+            lblTotaalPers.setText(totaalPers+"");
+            lblTotaalPrijs.setText("€"+totaalPrijs);
+        }
+
     }
 
     @Override
@@ -82,12 +121,28 @@ public class AddKlantController extends Controller {
             e.printStackTrace();
         }
         cbxTijdstip.getSelectionModel().select(initData.getTijdstip());
+        int totPers = 0;
+        Double totPrijs = 0.0;
+        for (Bestelling best :
+                tblHoofd.getItems()) {
+            totPers += best.getAantal();
+            totPrijs += best.getGerecht().getPrijs().doubleValue() * best.getAantal();
+        }
+        lblTotaalPrijs.setText("€"+totPrijs);
+        lblTotaalPers.setText(""+totPers);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         colHoofdGerecht.setCellValueFactory(new PropertyValueFactory<>("Gerecht"));
         colHoofdgerechtAantal.setCellValueFactory(new PropertyValueFactory<>("Aantal"));
+        colTotaal.setCellValueFactory(new PropertyValueFactory<Bestelling, Double>("Prijs"){
+            @Override
+            public ObservableValue<Double> call(TableColumn.CellDataFeatures<Bestelling, Double> param) {
+                return new SimpleDoubleProperty(param.getValue().getGerecht().getPrijs().get() * param.getValue().getAantal()).asObject();
+            }
+        });
+
         colHoofdGerecht.setCellFactory(column -> new TableCell<Bestelling, Gerecht>() {
             @Override
             protected void updateItem(Gerecht item, boolean empty) {
@@ -97,12 +152,23 @@ public class AddKlantController extends Controller {
                     setText(null);
                     setStyle("");
                 } else {
-                    setText(item.getNaam());
+                    setText(item.getNaam() + " X€" + item.getPrijs().get());
                 }
             }
         });
         colDessert.setCellValueFactory(colHoofdGerecht.getCellValueFactory());
-        colDessert.setCellFactory(colHoofdGerecht.getCellFactory());
+        colDessert.setCellFactory(column -> new TableCell<Bestelling, Gerecht>() {
+            @Override
+            protected void updateItem(Gerecht item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item.getNaam());
+                }
+            }
+        });
         colDessertAantal.setCellValueFactory(colHoofdgerechtAantal.getCellValueFactory());
 
         tblDessert.setEditable(true);
@@ -120,6 +186,25 @@ public class AddKlantController extends Controller {
         if (initData == null) {
             cbxTijdstip.getSelectionModel().select(0);
         }
+        tblHoofd.setOnKeyReleased(event -> {
+            if (event.getCode() == KeyCode.ENTER){
+                    tblHoofd.edit(tblHoofd.getSelectionModel().getSelectedIndex(), colHoofdgerechtAantal);
+            }
+            txtNaam.focusTraversableProperty().setValue(true);
+            txtGroepsnaam.focusTraversableProperty().setValue(true);
+            cbxTijdstip.focusTraversableProperty().setValue(true);
+            tblHoofd.focusTraversableProperty().setValue(true);
+        });
+        tblDessert.setOnKeyReleased(event -> {
+            System.out.println("fire");
+            if (event.getCode() == KeyCode.ENTER){
+                tblDessert.edit(tblDessert.getSelectionModel().getSelectedIndex(), colDessertAantal);
+            }
+            txtNaam.focusTraversableProperty().setValue(true);
+            txtGroepsnaam.focusTraversableProperty().setValue(true);
+            cbxTijdstip.focusTraversableProperty().setValue(true);
+            tblHoofd.focusTraversableProperty().setValue(true);
+        });
 
     }
 
@@ -226,16 +311,17 @@ public class AddKlantController extends Controller {
     }
 
     private Restaurantdag getResto() throws SQLException {
+
         if (initData != null) {
             PreparedStatement prepInint = Main.connection.prepareStatement("SELECT * FROM Restaurantdag where Id = ?");
             prepInint.setInt(1, initData.getId());
             ResultSet rsInit = prepInint.executeQuery();
-            rsInit.next();
+            if(rsInit.next()) {
                 int id = rsInit.getInt(1);
                 String naam = rsInit.getString(2);
                 LocalDate Datum = rsInit.getDate(3).toLocalDate();
                 return new Restaurantdag(Datum, naam, id);
-
+            }
         }
         ResultSet rs = Main.connection.prepareStatement("SELECT * FROM Restaurantdag order by Datum desc").executeQuery();
         rs.next();
@@ -302,7 +388,7 @@ public class AddKlantController extends Controller {
                         bestellingen.removeIf(best -> best.getGerecht().equals(ger));
                         bestellingen.add(b);
                     } else {
-                        Gerecht ger = new Gerecht(naam, rsGerechtPersoonlijk.getDouble(4), rsGerechtPersoonlijk.getBoolean(5),id);
+                        Gerecht ger = new Gerecht(naam, rsGerechtPersoonlijk.getDouble(5), rsGerechtPersoonlijk.getBoolean(4),id);
                         b = new Bestelling(ger, aantal, initData.getId(), bestellingsId);
                         bestellingen.removeIf(best -> best.getGerecht().equals(ger));
                         bestellingen.add(b);

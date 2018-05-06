@@ -29,6 +29,15 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
+//        if (Desktop.isDesktopSupported()){
+//            try{
+//                File myfile = new File("uitleg_sally.pdf");
+//                Desktop.getDesktop().open(myfile);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+        //keep this!!!!!!!!!!!!!!!!!!!!!!!!!!
         try {
             getConnection();
         } catch (SQLException e) {

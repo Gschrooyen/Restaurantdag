@@ -3,69 +3,91 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="550.0"
-            minWidth="650.0" prefHeight="664.0" prefWidth="693.0" xmlns="http://javafx.com/javafx/9"
-            fx:controller="be.sint_andries.controller.AddKlantController">
+<?import javafx.scene.text.Font?>
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="550.0" minWidth="650.0" prefHeight="664.0" prefWidth="693.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.sint_andries.controller.AddKlantController">
     <center>
-        <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-              prefHeight="542.0" prefWidth="650.0" BorderPane.alignment="CENTER">
-            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                  prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+        <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="724.0" prefWidth="694.0" BorderPane.alignment="CENTER">
+            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                 <Label text="Naam" HBox.hgrow="ALWAYS">
                     <HBox.margin>
-                        <Insets right="20.0"/>
+                        <Insets right="20.0" />
                     </HBox.margin>
                 </Label>
-                <TextField fx:id="txtNaam" promptText="Naam"/>
+                <TextField fx:id="txtNaam" promptText="Naam" />
             </HBox>
-            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                  prefHeight="100.0" prefWidth="512.0">
+            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="512.0">
                 <Label text="Groepsnaam">
                     <HBox.margin>
-                        <Insets right="20.0"/>
+                        <Insets right="20.0" />
                     </HBox.margin>
                 </Label>
-                <TextField fx:id="txtGroepsnaam" promptText="Groepsnaam"/>
+                <TextField fx:id="txtGroepsnaam" promptText="Groepsnaam" />
             </HBox>
             <ComboBox fx:id="cbxTijdstip" prefWidth="150.0">
                 <VBox.margin>
-                    <Insets bottom="20.0"/>
+                    <Insets bottom="20.0" />
                 </VBox.margin>
             </ComboBox>
-            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                  prefHeight="220.0" prefWidth="650.0" VBox.vgrow="ALWAYS">
-                <TableView fx:id="tblHoofd" editable="true" prefHeight="200.0" prefWidth="242.0">
+            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="220.0" prefWidth="650.0" VBox.vgrow="ALWAYS">
+                <TableView fx:id="tblHoofd" editable="true" prefHeight="190.0" prefWidth="317.0">
                     <columns>
-                        <TableColumn fx:id="colHoofdGerecht" editable="false" prefWidth="150.0" text="Hoofdgerecht"/>
-                        <TableColumn fx:id="colHoofdgerechtAantal" onEditCommit="#edit" prefWidth="88.0" text="Aantal"/>
+                        <TableColumn fx:id="colHoofdgerechtAantal" onEditCommit="#edit" prefWidth="88.0" text="Aantal" />
+                        <TableColumn fx:id="colHoofdGerecht" editable="false" prefWidth="150.0" text="Hoofdgerecht" />
+                  <TableColumn fx:id="colTotaal" prefWidth="75.0" text="Totaal" />
                     </columns>
                 </TableView>
             </HBox>
             <HBox alignment="CENTER" prefHeight="231.0" prefWidth="693.0">
                 <VBox.margin>
-                    <Insets top="20.0"/>
+                    <Insets top="20.0" />
                 </VBox.margin>
                 <TableView fx:id="tblDessert" editable="true" prefHeight="211.0" prefWidth="242.0">
                     <columns>
-                        <TableColumn fx:id="colDessert" editable="false" prefWidth="155.0" text="Dessert"/>
-                        <TableColumn fx:id="colDessertAantal" onEditCommit="#edit" prefWidth="84.0" text="Aantal"/>
+                        <TableColumn fx:id="colDessertAantal" onEditCommit="#edit" prefWidth="84.0" text="Aantal" />
+                        <TableColumn fx:id="colDessert" editable="false" prefWidth="155.0" text="Dessert" />
                     </columns>
                 </TableView>
             </HBox>
-            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                  prefHeight="94.0" prefWidth="565.0">
+         <HBox alignment="CENTER" prefHeight="62.0" prefWidth="694.0">
+            <children>
+               <Label text="Aantal personen:">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Label>
+               <Label fx:id="lblTotaalPers" text="0">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Label>
+            </children>
+         </HBox>
+         <HBox alignment="CENTER" prefHeight="37.0" prefWidth="694.0">
+            <children>
+               <Label prefHeight="1.0" prefWidth="121.0" text="Totaal Prijs:">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Label>
+               <Label fx:id="lblTotaalPrijs" text="€0">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Label>
+            </children>
+         </HBox>
+            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="94.0" prefWidth="565.0">
                 <Button fx:id="btnBack" mnemonicParsing="false" onMouseClicked="#Back" text="Back">
                     <HBox.margin>
-                        <Insets right="20.0"/>
+                        <Insets right="20.0" />
                     </HBox.margin>
                 </Button>
-                <Button fx:id="btnOverzicht" mnemonicParsing="false" onAction="#Overzicht"
-                        text="Opslaan naar overzicht">
+                <Button fx:id="btnOverzicht" mnemonicParsing="false" onAction="#Overzicht" text="Opslaan naar overzicht">
                     <HBox.margin>
-                        <Insets right="20.0"/>
+                        <Insets right="20.0" />
                     </HBox.margin>
                 </Button>
-                <Button fx:id="btnVolgende" mnemonicParsing="false" onAction="#Volgende" text="Opslaan en volgende"/>
+                <Button fx:id="btnVolgende" mnemonicParsing="false" onAction="#Volgende" text="Opslaan en volgende" />
             </HBox>
         </VBox>
     </center>
