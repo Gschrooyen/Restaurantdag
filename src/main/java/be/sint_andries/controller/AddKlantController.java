@@ -402,4 +402,30 @@ public class AddKlantController extends Controller {
         }
         return bestellingen;
     }
+
+    private String fetchGroep(String naam) throws SQLException {
+        PreparedStatement preparedStatement = Main.connection.prepareStatement("SELECT Groepsnaam FROM Klant WHERE Naam = ?");
+        preparedStatement.setString(1, naam);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()){
+            return resultSet.getString(1);
+        }
+        return "";
+    }
+
+    public void fillgroepsnaam(){
+        new Thread(() -> {
+
+            try {
+                long current = System.currentTimeMillis();
+                txtGroepsnaam.setText(fetchGroep(txtNaam.getText()));
+                System.out.println("fetching from db took " + (System.currentTimeMillis() - current) + " ms");
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage(), "SQLException", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+
+        }).start();
+
+    }
 }

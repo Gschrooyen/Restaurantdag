@@ -12,8 +12,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 
 import java.io.IOException;
 import java.net.URL;
@@ -26,12 +24,7 @@ import java.util.ResourceBundle;
 // TODO: 30.03.18 input controleren
 public class AddRestaurantdagViewController extends Controller {
 
-    @FXML
-    private TextField txtUren;
-    @FXML
-    private TextField txtMinuten;
-    @FXML
-    private ListView<Tijdstip> lvTijdstippen;
+
     @FXML
     private TextField txtNaam;
     @FXML
@@ -74,16 +67,6 @@ public class AddRestaurantdagViewController extends Controller {
         ger.remove(lvGeselDes.getSelectionModel().getSelectedIndex());
     }
 
-    public void addTijd() {
-        ObservableList<Tijdstip> tijd = lvTijdstippen.getItems();
-        tijd.add(new Tijdstip(Short.parseShort(txtUren.getText()), Short.parseShort(txtMinuten.getText())));
-    }
-
-    public void remTijd() {
-        ObservableList<Tijdstip> tijdstips = lvTijdstippen.getItems();
-        tijdstips.remove(lvTijdstippen.getSelectionModel().getSelectedItem());
-    }
-
     public void Opslaan(Event event) throws SQLException, IOException {
         if (txtNaam.getText().equals("")) {
             txtNaam.setStyle("-fx-border-color: red; -fx-border-width: 3px");
@@ -118,7 +101,6 @@ public class AddRestaurantdagViewController extends Controller {
                     insertRestaurantdagGerecht.setInt(1, rs.getInt("Id"));
                 }
                 assert restaurantdag != null;
-                handleTijdstippen(restaurantdag);
                 for (Gerecht hoofdgerecht :
                         lvGeselHoofd.getItems()) {
                     insertRestaurantdagGerecht.setInt(2, hoofdgerecht.getId());
@@ -137,7 +119,6 @@ public class AddRestaurantdagViewController extends Controller {
                 PreparedStatement deleteRestaurantdagGerecht = Main.connection.prepareStatement("DELETE FROM RestaurantdagGerechten WHERE RestaurantdagId = ? AND GerechtId = ?");
 
                 //update restaurantdag
-                handleTijdstippen(initdata);
                 updateRestaurantdag.setString(1, txtNaam.getText());
                 updateRestaurantdag.setDate(2, java.sql.Date.valueOf(dpDatum.getValue()));
                 updateRestaurantdag.setInt(3, initdata.getId());
@@ -232,7 +213,7 @@ public class AddRestaurantdagViewController extends Controller {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            lvTijdstippen.setItems(tijdstippen);
+
             lvGeselDes.setItems(desserten);
             lvGeselHoofd.setItems(hoofdgerechten);
         }
@@ -268,51 +249,6 @@ public class AddRestaurantdagViewController extends Controller {
         return gerechts;
     }
 
-    private void handleTijdstippen(Restaurantdag restaurantdag) throws SQLException {
-        PreparedStatement prepSelectTijden = Main.connection.prepareStatement("SELECT * from Tijdstip where RestaurantdagId = ?");
-        PreparedStatement prepInsertTijden = Main.connection.prepareStatement("INSERT INTO Tijdstip values (null, ?, ?, ?)");
-        PreparedStatement prepDeleteTijden = Main.connection.prepareStatement("DELETE FROM Tijdstip where Id = ?");
 
-        prepSelectTijden.setInt(1, restaurantdag.getId());
-        prepInsertTijden.setInt(3, restaurantdag.getId());
 
-        ResultSet rsTijden = prepSelectTijden.executeQuery();
-
-        ObservableList<Tijdstip> tijdenInDatabase = FXCollections.observableArrayList();
-        while (rsTijden.next()) {
-            int id = rsTijden.getInt(1);
-            Short uur = rsTijden.getShort(2);
-            Short minuut = rsTijden.getShort(3);
-
-            Tijdstip t = new Tijdstip(id, uur, minuut);
-            tijdenInDatabase.add(t);
-        }
-
-        ObservableList<Tijdstip> tijdenInList = FXCollections.observableArrayList(lvTijdstippen.getItems());
-        tijdenInList.removeAll(tijdenInDatabase);
-
-        for (Tijdstip t :
-                tijdenInList) {
-            prepInsertTijden.setInt(1, t.getUur());
-            prepInsertTijden.setInt(2, t.getMinuut());
-            prepInsertTijden.executeUpdate();
-        }
-
-        tijdenInList = FXCollections.observableArrayList(lvTijdstippen.getItems());
-
-        tijdenInDatabase.removeAll(tijdenInList);
-        for (Tijdstip t :
-                tijdenInDatabase) {
-            prepDeleteTijden.setInt(1, t.getId());
-            prepDeleteTijden.executeUpdate();
-        }
-    }
-
-    public void enterpressed(KeyEvent event) {
-        System.out.println("pressed a key");
-        System.out.println(event.getCode().getName());
-        if (event.getCode() == KeyCode.ENTER) {
-            addTijd();
-        }
-    }
 }

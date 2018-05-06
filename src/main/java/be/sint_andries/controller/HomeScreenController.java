@@ -27,7 +27,11 @@ public class HomeScreenController extends Controller {
 
 
     public void changeSceneToStart(ActionEvent actionEvent) {
-        // TODO: 6/05/2018 startscherm connecteren
+        try {
+            ChangeScene(actionEvent, "be/sint_andries/view/StartScreenView.fxml");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "SelectRestaurantdagView.fxml", "IOException", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public void changeSceneToNieuw(ActionEvent actionEvent) {
