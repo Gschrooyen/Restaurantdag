@@ -24,7 +24,7 @@ public class PDFMaker {
     public static void makeKlantPDF(List<Klant> klanten, String path) throws FileNotFoundException, DocumentException {
         Document document = new Document();
 
-        PdfWriter.getInstance(document, new FileOutputStream(".." + File.separator  + path));
+        PdfWriter.getInstance(document, new FileOutputStream(".." + File.separator + path));
         document.open();
         document.add(new LineSeparator(5F, 100F, BaseColor.BLACK, 6, 0));
         document.add(new Paragraph("overzicht van alle klanten", new Font(Font.FontFamily.TIMES_ROMAN, 25)));
@@ -57,9 +57,9 @@ public class PDFMaker {
 
             table.addCell(getCell(k.getTijdstip().toString(), PdfPCell.ALIGN_BASELINE));
             table.addCell(getCell(k.getNaam(), PdfPCell.ALIGN_BASELINE));
-            if (k.getGroepsNaam() != null){
+            if (k.getGroepsNaam() != null) {
                 table.addCell(getCell(k.getGroepsNaam(), PdfPCell.ALIGN_BASELINE));
-            }else {
+            } else {
                 table.addCell(getCell("", PdfPCell.ALIGN_BASELINE));
             }
             table.addCell(getCell(k.getVolwassenen() + "", PdfPCell.ALIGN_BASELINE));
@@ -74,7 +74,7 @@ public class PDFMaker {
 
     public static void makeKlantSpecificPDF(List<Klant> klanten, String path, boolean desserten) throws FileNotFoundException, DocumentException {
         Document document = new Document();
-        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(".." + File.separator  + path));
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(".." + File.separator + path));
         document.open();
 
         for (Klant k : klanten) {
@@ -120,7 +120,7 @@ public class PDFMaker {
             PdfPCell cell1 = new PdfPCell(cell);
             cel1.setBorder(Rectangle.NO_BORDER);
             cell1.setMinimumHeight(document.getPageSize().getHeight() / 2 - document.topMargin() - document.bottomMargin() - 20);
-            if (desserten){
+            if (desserten) {
                 cell1.setMinimumHeight(cell1.getMinimumHeight() / 2 + 20);
             }
             bigTableTop.addCell(cell1);
@@ -132,7 +132,7 @@ public class PDFMaker {
 
     public static void makeTotalenPDF(List<Klant> klanten, String path) throws FileNotFoundException, DocumentException {
         Document document = new Document();
-        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(".." + File.separator  + path));
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(".." + File.separator + path));
         document.open();
 
         Map<Gerecht, Integer> totalen = new HashMap<>();
@@ -155,7 +155,7 @@ public class PDFMaker {
             int aantal = totalen.get(g);
 
             table.addCell(getCell(g.getNaam(), new Font(Font.FontFamily.TIMES_ROMAN, 20, Font.BOLD)));
-            table.addCell(aantal+"");
+            table.addCell(aantal + "");
         }
         document.add(table);
 
@@ -164,18 +164,18 @@ public class PDFMaker {
 
     public static void makeKeukenPDF(List<Klant> klanten, String path) throws FileNotFoundException, DocumentException {
         Document document = new Document();
-        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(".." + File.separator  + path));
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(".." + File.separator + path));
         document.open();
         document.add(new Paragraph("KeukenRapport", new Font(Font.FontFamily.TIMES_ROMAN, 40, Font.BOLD)));
         document.add(new LineSeparator(5, 100, BaseColor.BLACK, 6, -4));
-        HashMap<Tijdstip, List<Bestelling>> tijdstipBestellingHashMap = new HashMap<Tijdstip, List<Bestelling>>();
+        HashMap<Tijdstip, List<Bestelling>> tijdstipBestellingHashMap = new HashMap<>();
         for (Klant k :
                 klanten) {
-            if (tijdstipBestellingHashMap.containsKey(k.getTijdstip())){
+            if (tijdstipBestellingHashMap.containsKey(k.getTijdstip())) {
                 List<Bestelling> bestellings = tijdstipBestellingHashMap.get(k.getTijdstip());
                 bestellings.addAll(k.getBestelling());
                 tijdstipBestellingHashMap.put(k.getTijdstip(), bestellings);
-            }else {
+            } else {
                 List<Bestelling> bestellings = new ArrayList<Bestelling>(k.getBestelling());
                 tijdstipBestellingHashMap.put(k.getTijdstip(), bestellings);
             }
@@ -200,68 +200,48 @@ public class PDFMaker {
                 Integer aantal = gerechtIntegerHashMap.get(g);
                 PdfPTable table = new PdfPTable(2);
                 table.addCell(getCell(g.getNaam(), new Font(Font.FontFamily.TIMES_ROMAN, 18)));
-                table.addCell(getCell(aantal+"", new Font(Font.FontFamily.TIMES_ROMAN, 18)));
+                table.addCell(getCell(aantal + "", new Font(Font.FontFamily.TIMES_ROMAN, 18)));
                 document.add(table);
 
             }
             System.out.println(t);
         }
-        
-        
-        
+
+
         document.close();
     }
 
     public static void makeTafelverdelingPDF(List<Klant> klanten, String path) throws FileNotFoundException, DocumentException {
         Document document = new Document();
-        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(".." + File.separator  + path));
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
         document.open();
         Paragraph paragraph = new Paragraph("Tafelverdeling", new Font(Font.FontFamily.TIMES_ROMAN, 35, Font.BOLD));
         paragraph.add(new LineSeparator(5F, 100, BaseColor.BLACK, 6, -12));
         document.add(paragraph);
-        document.add(Chunk.NEWLINE);
-        HashMap<Tijdstip, List<Klant>> tijdstipKlantHashMap = new HashMap<>();
-        for (Klant k :
-                klanten) {
-            if (tijdstipKlantHashMap.containsKey(k.getTijdstip())){
-                List<Klant> klants = tijdstipKlantHashMap.get(k.getTijdstip());
-                klants.add(k);
-                tijdstipKlantHashMap.put(k.getTijdstip(), klants);
-            }else {
-                List<Klant> klants = new ArrayList<Klant>();
-                klants.add(k);
-                tijdstipKlantHashMap.put(k.getTijdstip(), klants);
-            }
-        }
+        //document.add(Chunk.NEWLINE);
 
-        List<Tijdstip> tijdstipList = new ArrayList<>(tijdstipKlantHashMap.keySet());
-        tijdstipList = tijdstipList.stream().sorted(Tijdstip::compareTo).collect(Collectors.toList());
 
-        for (Tijdstip t :
-                tijdstipList) {
-            document.add(new Paragraph("vanaf " + t + " uur", new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD)));
-            document.add(new LineSeparator(3F, 100F, BaseColor.BLACK, 6, -5));
-            PdfPTable table = new PdfPTable(6);
-            table.setWidthPercentage(100);
-            Font font = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
-            table.addCell(getCell("Tijdstip", font));
-            table.addCell(getCell("naam", font));
-            table.addCell(getCell("groepsnaam", font));
-            table.addCell(getCell("volwassenen", font));
-            table.addCell(getCell("kinderen", font));
-            table.addCell(getCell("totaal", font));
 
-            for (Klant k :
-                    tijdstipKlantHashMap.get(t)) {
-                table.addCell(getCell(k.getTijdstip().toString(), PdfPCell.ALIGN_BASELINE));
-                table.addCell(getCell(k.getNaam(), PdfPCell.ALIGN_BASELINE));
-                table.addCell(getCell(k.getGroepsNaam(), PdfPCell.ALIGN_BASELINE));
-                table.addCell(getCell(k.getVolwassenen()+"", PdfPCell.ALIGN_BASELINE));
-                table.addCell(getCell(k.getKinderen()+"", PdfPCell.ALIGN_BASELINE));
-                table.addCell(getCell(k.getAantalPers()+"", PdfPCell.ALIGN_BASELINE));
-            }
-            document.add(table);
-        }
+        //klanten verdelen in voormiddag en namiddag
+        List<Klant> klanten_middag = klanten.stream().filter(klant -> klant.getTijdstip().getUur() < 16).collect(Collectors.toList());
+        List<Klant> klanten_avond = klanten.stream().filter(klant -> klant.getTijdstip().getUur() >= 16).collect(Collectors.toList());
+
+        //de klanten verdelen per groep.
+        HashMap<String, List<Klant>> stringListHashMap_middag = groepklantenopdgroepsnaam(klanten_middag);
+        HashMap<String, List<Klant>> stringListHashMap_avond = groepklantenopdgroepsnaam(klanten_avond);
+
+
+        Paragraph paragraph1 = new Paragraph("vanaf 12U", new Font(Font.FontFamily.TIMES_ROMAN, 25, Font.BOLD));
+        paragraph1.add(new LineSeparator(5F, 100, BaseColor.BLACK, 6, -6));
+        document.add(paragraph1);
+        addTafelverdelingTableToDoc(document, stringListHashMap_middag);
+
+
+        document.newPage();
+        Paragraph paragraph2 = new Paragraph("vanaf 16U30", new Font(Font.FontFamily.TIMES_ROMAN, 25, Font.BOLD));
+        paragraph2.add(new LineSeparator(5F, 100, BaseColor.BLACK, 6, -6));
+        document.add(paragraph2);
+        addTafelverdelingTableToDoc(document, stringListHashMap_avond);
 
         document.close();
     }
@@ -274,11 +254,67 @@ public class PDFMaker {
         return cell;
     }
 
-    private static PdfPCell getCell(String text, Font font){
+    private static PdfPCell getCell(String text, Font font) {
         PdfPCell cell = new PdfPCell(new Phrase(text, font));
         cell.setPadding(8);
         cell.setHorizontalAlignment(Element.ALIGN_BASELINE);
         cell.setBorder(PdfPCell.NO_BORDER);
         return cell;
     }
+
+    private static HashMap<String, List<Klant>> groepklantenopdgroepsnaam(List<Klant> klants) {
+        HashMap<String, List<Klant>> stringListHashMap = new HashMap<>();
+        for (Klant klant : klants) {
+            if (stringListHashMap.containsKey(klant.getGroepsNaam())) {
+                List<Klant> klantList = stringListHashMap.get(klant.getGroepsNaam());
+                klantList.add(klant);
+                stringListHashMap.put(klant.getGroepsNaam(), klantList);
+            } else {
+                List<Klant> klantList = new ArrayList<>();
+                klantList.add(klant);
+                stringListHashMap.put(klant.getGroepsNaam(), klantList);
+            }
+        }
+        return stringListHashMap;
+    }
+
+    private static void addTafelverdelingTableToDoc(Document document, HashMap<String, List<Klant>> stringListHashMap) throws DocumentException {
+        PdfPTable tabel = new PdfPTable(4);
+        tabel.setWidthPercentage(100);
+        Font font = new Font(Font.FontFamily.TIMES_ROMAN, 16, Font.BOLD);
+        tabel.addCell(getCell("Groepsnaam", font));
+        tabel.addCell(getCell("volwassenen", font));
+        tabel.addCell(getCell("kinderen", font));
+        tabel.addCell(getCell("totaal", font));
+        tabel.setHeaderRows(1);
+
+        Font font1 = new Font(Font.FontFamily.TIMES_ROMAN, 16);
+        int eindtotaal =0;
+        for (String groepsnaam :
+                stringListHashMap.keySet()) {
+            List<Klant> klants = stringListHashMap.get(groepsnaam);
+            String groep = "";
+            int volwassenen = 0;
+            int kinderen = 0;
+            for (Klant k :
+                    klants) {
+                groep = k.getGroepsNaam();
+                volwassenen += k.getVolwassenen();
+                kinderen += k.getKinderen();
+            }
+            tabel.addCell(getCell(groep, font1));
+            tabel.addCell(getCell(volwassenen + "", font1));
+            tabel.addCell(getCell(kinderen + "", font1));
+            int totaal = volwassenen + kinderen;
+            eindtotaal += totaal;
+            tabel.addCell(getCell(totaal + "", font1));
+        }
+        tabel.getDefaultCell().setBorder(Rectangle.NO_BORDER);
+        tabel.addCell("");
+        tabel.addCell("");
+        tabel.addCell("");
+        tabel.addCell(getCell(eindtotaal + "", new Font(Font.FontFamily.TIMES_ROMAN, 20, Font.BOLD)));
+        document.add(tabel);
+    }
 }
+

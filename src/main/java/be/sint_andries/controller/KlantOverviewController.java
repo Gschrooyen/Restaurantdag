@@ -1,6 +1,7 @@
 package be.sint_andries.controller;
 
 import be.sint_andries.Main;
+import be.sint_andries.controller.PDF_makers.PDFMaker;
 import be.sint_andries.model.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -21,7 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
-
+// TODO: 6/05/2018 knop om klant te verwijderen.
 /**
  * the controler to KlantOverviewView
  */
@@ -45,7 +46,26 @@ public class KlantOverviewController extends Controller {
      */
     public void Back(Event event){
         try {
-            HelperMethods.ChangeScene(event, "be/sint_andries/view/HomeScreenView.fxml");
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            chooser.setAcceptAllFileFilterUsed(false);
+            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                System.out.println("getCurrentDirectory(): "
+                        +  chooser.getCurrentDirectory());
+                System.out.println("getSelectedFile() : "
+                        +  chooser.getSelectedFile());
+                PDFMaker.makeTafelverdelingPDF(getKlanten(), chooser.getSelectedFile() + "\\test.pdf");
+            }
+            else {
+                System.out.println("No Selection ");
+            }
+
+            System.out.println("made pdf");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            HelperMethods.ChangeScene(event, "be/sint_andries/view/StartScreenView.fxml");
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Could not find HomeScreenView.fxml", "IOException", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();

@@ -13,6 +13,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
@@ -20,10 +21,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // TODO: 30.03.18 input controleren
+// TODO: 6/05/2018 evt aanmaakdatum in db
 public class AddRestaurantdagViewController extends Controller {
-
 
     @FXML
     private TextField txtNaam;
@@ -42,12 +45,38 @@ public class AddRestaurantdagViewController extends Controller {
     private ObservableList<Gerecht> dessert_origineel = FXCollections.observableArrayList();
 
     public void Back(Event event) throws IOException {
-        HelperMethods.ChangeScene(event, "be/sint_andries/view/RestaurantdagOverViewView.fxml");
+        HelperMethods.ChangeScene(event, "be/sint_andries/view/HomeScreenView.fxml");
     }
 
     public void addHoofd() {
+
         ObservableList<Gerecht> ger = lvGeselHoofd.getItems();
-        ger.add(lvAlleHoofd.getSelectionModel().getSelectedItem());
+
+        //get the new price of the dish
+        String newPrijs = JOptionPane.showInputDialog(null, "Prijs van "+lvAlleHoofd.getSelectionModel().getSelectedItem(), lvAlleHoofd.getSelectionModel().getSelectedItem().getPrijs().doubleValue());
+        //clean up user input
+        newPrijs = newPrijs.replace(',', '.');
+        newPrijs = newPrijs.replaceAll(" ", "");
+        Pattern pattern = Pattern.compile("[0-9]{1,2}(\\.[0-9]{1,2})?");
+        Matcher matcher = pattern.matcher(newPrijs);
+        if (matcher.find())
+        {
+            newPrijs = matcher.group(0);
+            Double prijs = 0.0;
+            if (newPrijs != null){
+                prijs = Double.parseDouble(newPrijs);
+            }
+            if (prijs != 0.0){
+                if (prijs == lvAlleHoofd.getSelectionModel().getSelectedItem().getPrijs().doubleValue()){
+                    ger.add(lvAlleHoofd.getSelectionModel().getSelectedItem());
+
+                }else{
+                    ger.add(new Gerecht(lvAlleHoofd.getSelectionModel().getSelectedItem(), prijs));
+                }
+            }else {
+                JOptionPane.showMessageDialog(null, "geen prijs opgegeven", "Geen prijs", JOptionPane.WARNING_MESSAGE);
+            }
+        }
         lvGeselHoofd.setItems(ger);
     }
 
@@ -161,7 +190,7 @@ public class AddRestaurantdagViewController extends Controller {
 
                 }
             }
-            HelperMethods.ChangeScene(event, "be/sint_andries/view/RestaurantdagOverViewView.fxml");
+            HelperMethods.ChangeScene(event, "be/sint_andries/view/StartScreenView.fxml");
         }
     }
 

@@ -28,6 +28,7 @@ import java.util.ResourceBundle;
 /**
  * controller to AddKlantView
  */
+
 public class AddKlantController extends Controller {
 
     public TableView<Bestelling> tblDessert;
@@ -68,19 +69,18 @@ public class AddKlantController extends Controller {
         b.setAantal((Integer) e.getNewValue());
 
 
-
         txtNaam.focusTraversableProperty().setValue(false);
         txtGroepsnaam.focusTraversableProperty().setValue(false);
         cbxTijdstip.focusTraversableProperty().setValue(false);
         tblHoofd.focusTraversableProperty().setValue(false);
-        if (e.getTableView() == tblDessert){
-            if (e.getTableView().getSelectionModel().getSelectedIndex() != e.getTableView().getItems().size()-1){
+        if (e.getTableView() == tblDessert) {
+            if (e.getTableView().getSelectionModel().getSelectedIndex() != e.getTableView().getItems().size() - 1) {
                 e.getTableView().getSelectionModel().selectBelowCell();
-            }else {
+            } else {
                 e.getTableView().getSelectionModel().clearSelection();
             }
 
-        }else {
+        } else {
             if (e.getTableView().getSelectionModel().getSelectedIndex() != e.getTableView().getItems().size() - 1) {
                 tblHoofd.focusTraversableProperty().setValue(true);
                 e.getTableView().getSelectionModel().selectBelowCell();
@@ -97,8 +97,8 @@ public class AddKlantController extends Controller {
                 totaalPers += bestelling.getAantal();
                 totaalPrijs += bestelling.getGerecht().getPrijs().doubleValue() * bestelling.getAantal();
             }
-            lblTotaalPers.setText(totaalPers+"");
-            lblTotaalPrijs.setText("€"+totaalPrijs);
+            lblTotaalPers.setText(totaalPers + "");
+            lblTotaalPrijs.setText("\u20ac" + totaalPrijs);
         }
 
     }
@@ -128,15 +128,15 @@ public class AddKlantController extends Controller {
             totPers += best.getAantal();
             totPrijs += best.getGerecht().getPrijs().doubleValue() * best.getAantal();
         }
-        lblTotaalPrijs.setText("€"+totPrijs);
-        lblTotaalPers.setText(""+totPers);
+        lblTotaalPrijs.setText("€" + totPrijs);
+        lblTotaalPers.setText("" + totPers);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         colHoofdGerecht.setCellValueFactory(new PropertyValueFactory<>("Gerecht"));
         colHoofdgerechtAantal.setCellValueFactory(new PropertyValueFactory<>("Aantal"));
-        colTotaal.setCellValueFactory(new PropertyValueFactory<Bestelling, Double>("Prijs"){
+        colTotaal.setCellValueFactory(new PropertyValueFactory<Bestelling, Double>("Prijs") {
             @Override
             public ObservableValue<Double> call(TableColumn.CellDataFeatures<Bestelling, Double> param) {
                 return new SimpleDoubleProperty(param.getValue().getGerecht().getPrijs().get() * param.getValue().getAantal()).asObject();
@@ -187,8 +187,8 @@ public class AddKlantController extends Controller {
             cbxTijdstip.getSelectionModel().select(0);
         }
         tblHoofd.setOnKeyReleased(event -> {
-            if (event.getCode() == KeyCode.ENTER){
-                    tblHoofd.edit(tblHoofd.getSelectionModel().getSelectedIndex(), colHoofdgerechtAantal);
+            if (event.getCode() == KeyCode.ENTER) {
+                tblHoofd.edit(tblHoofd.getSelectionModel().getSelectedIndex(), colHoofdgerechtAantal);
             }
             txtNaam.focusTraversableProperty().setValue(true);
             txtGroepsnaam.focusTraversableProperty().setValue(true);
@@ -197,7 +197,7 @@ public class AddKlantController extends Controller {
         });
         tblDessert.setOnKeyReleased(event -> {
             System.out.println("fire");
-            if (event.getCode() == KeyCode.ENTER){
+            if (event.getCode() == KeyCode.ENTER) {
                 tblDessert.edit(tblDessert.getSelectionModel().getSelectedIndex(), colDessertAantal);
             }
             txtNaam.focusTraversableProperty().setValue(true);
@@ -230,8 +230,8 @@ public class AddKlantController extends Controller {
 
     private ObservableList<Tijdstip> tijdstippen() throws SQLException {
         ObservableList<Tijdstip> tijden = FXCollections.observableArrayList();
-        PreparedStatement preptijden = Main.connection.prepareStatement("SELECT Uur, Minuut, Id FROM Tijdstip where RestaurantdagId = ?");
-        preptijden.setInt(1, getRestoId());
+        PreparedStatement preptijden = Main.connection.prepareStatement("SELECT Uur, Minuut, Id FROM Tijdstip WHERE RestaurantdagId = 1");
+        //preptijden.setInt(1, getRestoId());
         ResultSet rsTijd = preptijden.executeQuery();
         while (rsTijd.next()) {
             tijden.add(new Tijdstip(rsTijd.getInt(3), rsTijd.getShort(1), rsTijd.getShort(2)));
@@ -278,7 +278,7 @@ public class AddKlantController extends Controller {
     }
 
     private void updateBestelling(TableView<Bestelling> tableView) throws SQLException {
-        PreparedStatement prepUpdateBestelling = Main.connection.prepareStatement("UPDATE GerechtBestelling SET Aantal = ? where BestellingsId = ?");
+        PreparedStatement prepUpdateBestelling = Main.connection.prepareStatement("UPDATE GerechtBestelling SET Aantal = ? WHERE BestellingsId = ?");
         for (Bestelling b :
                 tableView.getItems()) {
             if (b.getId() != null) {
@@ -294,7 +294,7 @@ public class AddKlantController extends Controller {
     }
 
     private void insertBestellingen(ObservableList<Bestelling> bestellings, int klantId) throws SQLException {
-        PreparedStatement prepBestelling = Main.connection.prepareStatement("INSERT INTO GerechtBestelling VALUES (?,null, ?, ?)");
+        PreparedStatement prepBestelling = Main.connection.prepareStatement("INSERT INTO GerechtBestelling VALUES (?,NULL, ?, ?)");
         for (Bestelling g :
                 bestellings) {
             if (g.getAantal() != 0) {
@@ -313,17 +313,17 @@ public class AddKlantController extends Controller {
     private Restaurantdag getResto() throws SQLException {
 
         if (initData != null) {
-            PreparedStatement prepInint = Main.connection.prepareStatement("SELECT * FROM Restaurantdag where Id = ?");
+            PreparedStatement prepInint = Main.connection.prepareStatement("SELECT * FROM Restaurantdag WHERE Id = ?");
             prepInint.setInt(1, initData.getId());
             ResultSet rsInit = prepInint.executeQuery();
-            if(rsInit.next()) {
+            if (rsInit.next()) {
                 int id = rsInit.getInt(1);
                 String naam = rsInit.getString(2);
                 LocalDate Datum = rsInit.getDate(3).toLocalDate();
                 return new Restaurantdag(Datum, naam, id);
             }
         }
-        ResultSet rs = Main.connection.prepareStatement("SELECT * FROM Restaurantdag order by Datum desc").executeQuery();
+        ResultSet rs = Main.connection.prepareStatement("SELECT * FROM Restaurantdag ORDER BY Datum DESC").executeQuery();
         rs.next();
         int id = rs.getInt(1);
         String naam = rs.getString(2);
@@ -345,9 +345,10 @@ public class AddKlantController extends Controller {
             while (rsGerecht.next()) {
                 String naam = rsGerecht.getString("Naam");
                 int id = rsGerecht.getInt("Id");
-                if (rsGerecht.getBoolean("IsDessert")) {
+                if (!rsGerecht.getBoolean("IsDessert")) {
                     Double prijs = rsGerecht.getDouble("Prijs");
-                    Gerecht ger = new Gerecht(naam, prijs, rsGerecht.getBoolean("IsKind") ,id);
+                    System.out.println(prijs);
+                    Gerecht ger = new Gerecht(naam, prijs, rsGerecht.getBoolean("IsKind"), id);
                     if (initData != null) {
                         bestellingen.add(new Bestelling(ger, 0, initData.getId()));
                     } else {
@@ -388,7 +389,7 @@ public class AddKlantController extends Controller {
                         bestellingen.removeIf(best -> best.getGerecht().equals(ger));
                         bestellingen.add(b);
                     } else {
-                        Gerecht ger = new Gerecht(naam, rsGerechtPersoonlijk.getDouble(5), rsGerechtPersoonlijk.getBoolean(4),id);
+                        Gerecht ger = new Gerecht(naam, rsGerechtPersoonlijk.getDouble(5), rsGerechtPersoonlijk.getBoolean(4), id);
                         b = new Bestelling(ger, aantal, initData.getId(), bestellingsId);
                         bestellingen.removeIf(best -> best.getGerecht().equals(ger));
                         bestellingen.add(b);
@@ -404,16 +405,26 @@ public class AddKlantController extends Controller {
     }
 
     private String fetchGroep(String naam) throws SQLException {
-        PreparedStatement preparedStatement = Main.connection.prepareStatement("SELECT Groepsnaam FROM Klant WHERE Naam = ?");
-        preparedStatement.setString(1, naam);
+        PreparedStatement preparedStatement = Main.connection.prepareStatement("SELECT Groepsnaam FROM Klant WHERE Naam LIKE '" + naam + "%' ORDER BY Id DESC ");
+        //preparedStatement.setString(1, naam);
         ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()){
-            return resultSet.getString(1);
+
+        if (resultSet.next()) {
+            if (Objects.equals(txtNaam.getText(), "") || txtNaam.getText() == null) {
+                return "";
+            } else {
+                return resultSet.getString(1);
+            }
+        } else {
+
+            System.out.println(txtNaam.getText() + "bla");
+            return txtNaam.getText();
+
         }
-        return "";
+
     }
 
-    public void fillgroepsnaam(){
+    public void fillgroepsnaam() {
         new Thread(() -> {
 
             try {
