@@ -33,6 +33,12 @@ public class Gerecht implements Comparable {
         this.prijs = new SimpleDoubleProperty(prijs);
     }
 
+    public Gerecht(Gerecht gerecht, Double newPrijs){
+        this.isDessert = new SimpleBooleanProperty(false);
+        this.isKindGerecht = gerecht.isKindGerecht;
+        this.naam = gerecht.naam;
+        this.prijs = new SimpleDoubleProperty(newPrijs);
+    }
     public String getNaam() {
         return naam;
     }

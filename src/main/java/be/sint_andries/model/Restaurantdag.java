@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+
 public class Restaurantdag {
     private int id;
     private List<Tijdstip> tijdstippen;

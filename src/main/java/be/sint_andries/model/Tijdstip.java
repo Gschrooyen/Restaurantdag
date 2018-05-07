@@ -61,4 +61,14 @@ public class Tijdstip implements Comparable {
     public int hashCode() {
         return Integer.hashCode(Integer.hashCode(uur) + Integer.hashCode(minuut));
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Tijdstip) {
+            if (this.uur == ((Tijdstip) obj).uur && this.minuut == ((Tijdstip) obj).minuut) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

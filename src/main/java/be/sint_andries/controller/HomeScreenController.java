@@ -35,10 +35,13 @@ public class HomeScreenController extends Controller {
     }
 
     public void changeSceneToNieuw(ActionEvent actionEvent) {
-        try {
-            ChangeScene(actionEvent, "be/sint_andries/view/AddRestaurantdagView.fxml");
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "SelectRestaurantdagView.fxml", "IOException", JOptionPane.ERROR_MESSAGE);
+        Integer choise = JOptionPane.showConfirmDialog(null, "ben je zeker dat je een nieuwe restaurantdag wilt aanmaken", "bevestigen", JOptionPane.YES_NO_OPTION);
+        if (choise == 0) {
+            try {
+                ChangeScene(actionEvent, "be/sint_andries/view/AddRestaurantdagView.fxml");
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "SelectRestaurantdagView.fxml", "IOException", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
