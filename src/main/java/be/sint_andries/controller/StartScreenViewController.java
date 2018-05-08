@@ -65,4 +65,13 @@ public class StartScreenViewController extends Controller {
             e.printStackTrace();
         }
     }
+
+    public void ChangeScenteToRapporten(ActionEvent actionEvent) {
+        try {
+            HelperMethods.ChangeSceneWithData(actionEvent, "be/sint_andries/view/RapportView.fxml", initdata);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Could not find HomeScreenView.fxml", "IOException", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
 }

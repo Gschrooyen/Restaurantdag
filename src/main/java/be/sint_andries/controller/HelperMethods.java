@@ -31,6 +31,18 @@ class HelperMethods {
         window.show();
     }
 
+    static void ChangeScene(Scene s, String path) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(HelperMethods.class.getClassLoader().getResource(path));
+        Parent viewParent = loader.load();
+        Scene AddKlantScenen = new Scene(viewParent);
+
+        //this line gets the stage information
+        Stage window = (Stage) s.getWindow();
+        window.setScene(AddKlantScenen);
+        window.show();
+    }
+
     static <T> void ChangeSceneWithData(Event e, String path, T dataToInit) throws IOException {
         if (dataToInit instanceof Bestelling || dataToInit instanceof Gerecht || dataToInit instanceof Klant || dataToInit instanceof Restaurantdag) {
             FXMLLoader loader = new FXMLLoader();

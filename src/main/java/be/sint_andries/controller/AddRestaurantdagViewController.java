@@ -7,6 +7,7 @@ import be.sint_andries.model.Restaurantdag;
 import be.sint_andries.model.Tijdstip;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
@@ -27,25 +28,33 @@ import java.util.regex.Pattern;
 // TODO: 30.03.18 input controleren
 // TODO: 6/05/2018 evt aanmaakdatum in db
 public class AddRestaurantdagViewController extends Controller {
-
+    private ParentViewController parentViewController;
     @FXML
     private TextField txtNaam;
     @FXML
     private DatePicker dpDatum;
     @FXML
-    private ListView<Gerecht> lvAlleHoofd;
+    public ListView<Gerecht> lvAlleHoofd;
     @FXML
-    private ListView<Gerecht> lvGeselHoofd;
+    public ListView<Gerecht> lvGeselHoofd;
     @FXML
-    private ListView<Gerecht> lvAlleDes;
+    public ListView<Gerecht> lvAlleDes;
     @FXML
-    private ListView<Gerecht> lvGeselDes;
+    public ListView<Gerecht> lvGeselDes;
     private Restaurantdag initdata = null;
     private ObservableList<Gerecht> hoofdegerecht_origineel = FXCollections.observableArrayList();
     private ObservableList<Gerecht> dessert_origineel = FXCollections.observableArrayList();
 
     public void Back(Event event) throws IOException {
-        HelperMethods.ChangeScene(event, "be/sint_andries/view/HomeScreenView.fxml");
+        if (initdata != null){
+            HelperMethods.ChangeScene(event, "be/sint_andries/view/StartScreenView.fxml");
+        }else {
+            HelperMethods.ChangeScene(event, "be/sint_andries/view/HomeScreenView.fxml");
+        }
+    }
+
+    public void nieuw(ActionEvent actionEvent){
+
     }
 
     public void addHoofd() {
@@ -279,5 +288,7 @@ public class AddRestaurantdagViewController extends Controller {
     }
 
 
-
+    public void inti(ParentViewController parentViewController) {
+        this.parentViewController = parentViewController;
+    }
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -9,32 +8,32 @@
    <center>
       <VBox alignment="CENTER" prefHeight="396.0" prefWidth="266.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="109.0" text="Tafelbriefjes">
+            <Button mnemonicParsing="false" onAction="#generateTafelBriefjes" prefHeight="26.0" prefWidth="109.0" text="Tafelbriefjes">
                <VBox.margin>
                   <Insets bottom="30.0" top="40.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="103.0" text="Totalen">
+            <Button mnemonicParsing="false" onAction="#generateTotalenPDF" prefHeight="26.0" prefWidth="103.0" text="Totalen">
                <VBox.margin>
                   <Insets bottom="30.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="101.0" text="Keuken">
+            <Button mnemonicParsing="false" onAction="#generateKeukenPDF" prefHeight="26.0" prefWidth="101.0" text="Keuken">
                <VBox.margin>
                   <Insets bottom="30.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="111.0" text="Kassa">
+            <Button mnemonicParsing="false" onAction="#generateKassaPDF" prefHeight="26.0" prefWidth="111.0" text="Kassa">
                <VBox.margin>
                   <Insets bottom="30.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="110.0" text="Tafelverdeling">
+            <Button mnemonicParsing="false" onAction="#generateTafelverdelingPDF" prefHeight="26.0" prefWidth="116.0" text="Tafelverdeling">
                <VBox.margin>
                   <Insets bottom="30.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="102.0" text="Back">
+            <Button mnemonicParsing="false" onAction="#back" prefHeight="26.0" prefWidth="102.0" text="Back">
                <VBox.margin>
                   <Insets bottom="50.0" />
                </VBox.margin>

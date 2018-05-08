@@ -18,7 +18,7 @@ import java.util.ResourceBundle;
 
 public class AddNewGerechtViewController extends Controller {
 
-
+    private ParentViewController parentViewController;
     @FXML
     private TextField txtPrijs;
     @FXML
@@ -125,5 +125,9 @@ public class AddNewGerechtViewController extends Controller {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+    }
+
+    public void init(ParentViewController parentViewController) {
+        this.parentViewController = parentViewController;
     }
 }

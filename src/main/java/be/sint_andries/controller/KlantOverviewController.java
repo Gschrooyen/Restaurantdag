@@ -1,7 +1,6 @@
 package be.sint_andries.controller;
 
 import be.sint_andries.Main;
-import be.sint_andries.controller.PDF_makers.PDFMaker;
 import be.sint_andries.model.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -45,25 +44,6 @@ public class KlantOverviewController extends Controller {
      * @param event the event that called this method.
      */
     public void Back(Event event){
-        try {
-            JFileChooser chooser = new JFileChooser();
-            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            chooser.setAcceptAllFileFilterUsed(false);
-            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-                System.out.println("getCurrentDirectory(): "
-                        +  chooser.getCurrentDirectory());
-                System.out.println("getSelectedFile() : "
-                        +  chooser.getSelectedFile());
-                PDFMaker.makeTafelverdelingPDF(getKlanten(), chooser.getSelectedFile() + "\\test.pdf");
-            }
-            else {
-                System.out.println("No Selection ");
-            }
-
-            System.out.println("made pdf");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         try {
             HelperMethods.ChangeScene(event, "be/sint_andries/view/StartScreenView.fxml");
         } catch (IOException e) {

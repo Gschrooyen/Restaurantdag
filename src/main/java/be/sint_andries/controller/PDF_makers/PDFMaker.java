@@ -5,35 +5,52 @@ import be.sint_andries.model.Gerecht;
 import be.sint_andries.model.Klant;
 import be.sint_andries.model.Tijdstip;
 import com.itextpdf.text.*;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 
+import java.awt.*;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.IOException;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PDFMaker {
 
-    public static void makeKlantPDF(List<Klant> klanten, String path) throws FileNotFoundException, DocumentException {
+    public static void makeKassaPDF(List<Klant> klanten) throws IOException, DocumentException {
         Document document = new Document();
-
-        PdfWriter.getInstance(document, new FileOutputStream(".." + File.separator + path));
+        File f = File.createTempFile("tafelbladen", ".pdf");
+        f.deleteOnExit();
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(f));
         document.open();
         document.add(new LineSeparator(5F, 100F, BaseColor.BLACK, 6, 0));
         document.add(new Paragraph("overzicht van alle klanten", new Font(Font.FontFamily.TIMES_ROMAN, 25)));
         document.add(new LineSeparator(5F, 100F, BaseColor.BLACK, 6, -4));
+
+
+
+        klanten.sort(Comparator.comparing(Klant::getTijdstip));
+        List<Klant> klanten_middag = klanten.stream().filter(k -> k.getTijdstip().getUur() < 16).collect(Collectors.toList());
+        List<Klant> klanten_avond = klanten.stream().filter(k -> k.getTijdstip().getUur() >= 16).collect(Collectors.toList());
+
+        addKassaTableToDoc(klanten_middag, document);
+        document.newPage();
+        addKassaTableToDoc(klanten_avond, document);
+        document.close();
+
+        openFile(f);
+    }
+
+    private static void addKassaTableToDoc(List<Klant> klanten, Document document) throws DocumentException {
         PdfPTable table = new PdfPTable(6);
         table.setWidthPercentage(100);
         table.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
         PdfPCell cel1 = getCell("Tijdstip", PdfPCell.ALIGN_LEFT);
-        System.out.println(cel1);
         cel1.setPaddingTop(5);
         table.addCell(cel1);
         cel1 = getCell("Naam", PdfPCell.ALIGN_CENTER);
@@ -51,6 +68,7 @@ public class PDFMaker {
         cel1 = getCell("Totaal: ", PdfPCell.ALIGN_RIGHT);
         cel1.setPaddingTop(5);
         table.addCell(cel1);
+        table.setHeaderRows(1);
 
         for (Klant k :
                 klanten) {
@@ -68,13 +86,14 @@ public class PDFMaker {
         }
 
         document.add(table);
-        document.close();
     }
 
 
-    public static void makeKlantSpecificPDF(List<Klant> klanten, String path, boolean desserten) throws FileNotFoundException, DocumentException {
+    public static void makeTafelbladenPDF(List<Klant> klanten, boolean desserten) throws IOException, DocumentException {
         Document document = new Document();
-        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(".." + File.separator + path));
+        File f = File.createTempFile("tafelbladen", ".pdf");
+        f.deleteOnExit();
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(f));
         document.open();
 
         for (Klant k : klanten) {
@@ -121,18 +140,22 @@ public class PDFMaker {
             cel1.setBorder(Rectangle.NO_BORDER);
             cell1.setMinimumHeight(document.getPageSize().getHeight() / 2 - document.topMargin() - document.bottomMargin() - 20);
             if (desserten) {
-                cell1.setMinimumHeight(cell1.getMinimumHeight() / 2 + 20);
+                cell1.setMinimumHeight(cell1.getMinimumHeight() / 2 + 30);
             }
             bigTableTop.addCell(cell1);
             document.add(bigTableTop);
             document.add(new Phrase("test", new Font(Font.FontFamily.TIMES_ROMAN, 12, -1, BaseColor.WHITE)));
         }
         document.close();
+
+        openFile(f);
     }
 
-    public static void makeTotalenPDF(List<Klant> klanten, String path) throws FileNotFoundException, DocumentException {
+    public static void makeTotalenPDF(List<Klant> klanten) throws DocumentException, IOException {
         Document document = new Document();
-        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(".." + File.separator + path));
+        File f = File.createTempFile("tafelbladen", ".pdf");
+        f.deleteOnExit();
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(f));
         document.open();
 
         Map<Gerecht, Integer> totalen = new HashMap<>();
@@ -160,11 +183,14 @@ public class PDFMaker {
         document.add(table);
 
         document.close();
+        openFile(f);
     }
 
-    public static void makeKeukenPDF(List<Klant> klanten, String path) throws FileNotFoundException, DocumentException {
+    public static void makeKeukenPDF(List<Klant> klanten) throws IOException, DocumentException {
         Document document = new Document();
-        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(".." + File.separator + path));
+        File f = File.createTempFile("tafelbladen", ".pdf");
+        f.deleteOnExit();
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(f));
         document.open();
         document.add(new Paragraph("KeukenRapport", new Font(Font.FontFamily.TIMES_ROMAN, 40, Font.BOLD)));
         document.add(new LineSeparator(5, 100, BaseColor.BLACK, 6, -4));
@@ -209,11 +235,14 @@ public class PDFMaker {
 
 
         document.close();
+        openFile(f);
     }
 
-    public static void makeTafelverdelingPDF(List<Klant> klanten, String path) throws FileNotFoundException, DocumentException {
+    public static void makeTafelverdelingPDF(List<Klant> klanten) throws IOException, DocumentException {
         Document document = new Document();
-        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
+        File f = File.createTempFile("tafelbladen", ".pdf");
+        f.deleteOnExit();
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(f));
         document.open();
         Paragraph paragraph = new Paragraph("Tafelverdeling", new Font(Font.FontFamily.TIMES_ROMAN, 35, Font.BOLD));
         paragraph.add(new LineSeparator(5F, 100, BaseColor.BLACK, 6, -12));
@@ -244,6 +273,7 @@ public class PDFMaker {
         addTafelverdelingTableToDoc(document, stringListHashMap_avond);
 
         document.close();
+        openFile(f);
     }
 
     private static PdfPCell getCell(String text, int alignment) {
@@ -315,6 +345,18 @@ public class PDFMaker {
         tabel.addCell("");
         tabel.addCell(getCell(eindtotaal + "", new Font(Font.FontFamily.TIMES_ROMAN, 20, Font.BOLD)));
         document.add(tabel);
+    }
+
+    private static void openFile(File f) {
+        new Thread(() -> {
+            if (Desktop.isDesktopSupported()){
+                try{
+                    Desktop.getDesktop().open(f);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }
 

@@ -210,22 +210,25 @@ public class AddKlantController extends Controller {
 
     public void Overzicht(Event event) {
         try {
-            addKlant();
+            if (addKlant()) {
+                try {
+                    HelperMethods.ChangeScene(event, "be/sint_andries/view/KlantOverviewView.fxml");
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(null, "Could not find KlantOverviewView.fxml", "IOException", JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace();
+                }
+            }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "SQLException", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
-        try {
-            HelperMethods.ChangeScene(event, "be/sint_andries/view/KlantOverviewView.fxml");
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Could not find KlantOverviewView.fxml", "IOException", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }
+
     }
 
     public void Volgende(Event e) throws IOException, SQLException {
-        addKlant();
-        HelperMethods.ChangeScene(e, "be/sint_andries/view/AddKlantView.fxml");
+        if (addKlant()) {
+            HelperMethods.ChangeScene(e, "be/sint_andries/view/AddKlantView.fxml");
+        }
     }
 
     private ObservableList<Tijdstip> tijdstippen() throws SQLException {
@@ -239,70 +242,82 @@ public class AddKlantController extends Controller {
         return tijden;
     }
 
-    private void addKlant() throws SQLException {
+    private boolean addKlant() throws SQLException {
+        if (check_everything()) {
+            if (initData == null) {
+                PreparedStatement prep = Main.connection.prepareStatement("INSERT INTO Klant VALUES (?, ?, ?, ?, ?)");
+                String naam = txtNaam.getText();
+                int tid = cbxTijdstip.getSelectionModel().getSelectedItem().getId();
+                prep.setInt(5, tid);
+                prep.setString(2, naam);
+                if (txtGroepsnaam.getText() != null || !Objects.equals(txtGroepsnaam.getText(), "")) {
+                    prep.setString(3, txtGroepsnaam.getText());
+                }
+                prep.setInt(4, getRestoId());
+                //insert new Klant
+                int insert = prep.executeUpdate();
+                if (insert != 1) {
+                    throw new SQLException("not inserted");
+                }
+                ResultSet rsKlant = Main.connection.prepareStatement("SELECT Id FROM Klant ORDER BY Id DESC ").executeQuery();
+                rsKlant.next();
+                int klantId = rsKlant.getInt("Id");
+                insertBestellingen(tblHoofd.getItems(), klantId);
+                insertBestellingen(tblDessert.getItems(), klantId);
+            } else {
+                PreparedStatement prepUpdateKlant = Main.connection.prepareStatement("UPDATE Klant SET naam = ?, GroepsNaam = ?, TijdstipId = ? WHERE Id = ?");
+                prepUpdateKlant.setString(1, txtNaam.getText());
+                if (txtGroepsnaam.getText() != null || !Objects.equals(txtGroepsnaam.getText(), "")) {
+                    prepUpdateKlant.setString(2, txtGroepsnaam.getText());
+                }
+                prepUpdateKlant.setInt(3, cbxTijdstip.getSelectionModel().getSelectedItem().getId());
+                prepUpdateKlant.setInt(4, initData.getId());
+                System.out.println(prepUpdateKlant.executeUpdate());
+                updateBestelling(tblHoofd);
+                updateBestelling(tblDessert);
+            }
+            return true;
+        }
+        return false;
+    }
 
-        if (initData == null) {
-            PreparedStatement prep = Main.connection.prepareStatement("INSERT INTO Klant VALUES (?, ?, ?, ?, ?)");
-            String naam = txtNaam.getText();
-            int tid = cbxTijdstip.getSelectionModel().getSelectedItem().getId();
-            prep.setInt(5, tid);
-            prep.setString(2, naam);
-            if (txtGroepsnaam.getText() != null || !Objects.equals(txtGroepsnaam.getText(), "")) {
-                prep.setString(3, txtGroepsnaam.getText());
+    private void updateBestelling(TableView<Bestelling> tableView) {
+        PreparedStatement prepUpdateBestelling = null;
+        try {
+            prepUpdateBestelling = Main.connection.prepareStatement("UPDATE GerechtBestelling SET Aantal = ? WHERE BestellingsId = ?");
+            for (Bestelling b :
+                    tableView.getItems()) {
+                if (b.getId() != null) {
+                    prepUpdateBestelling.setInt(1, b.getAantal());
+                    prepUpdateBestelling.setInt(2, b.getId());
+                    prepUpdateBestelling.executeUpdate();
+                } else if (b.getAantal() != 0) {
+                    ObservableList<Bestelling> best = FXCollections.observableArrayList();
+                    best.add(b);
+                    insertBestellingen(best, initData.getId());
+                }
             }
-            prep.setInt(4, getRestoId());
-            //insert new Klant
-            int insert = prep.executeUpdate();
-            if (insert != 1) {
-                throw new SQLException("not inserted");
-            }
-            ResultSet rsKlant = Main.connection.prepareStatement("SELECT Id FROM Klant ORDER BY Id DESC ").executeQuery();
-            rsKlant.next();
-            int klantId = rsKlant.getInt("Id");
-
-            insertBestellingen(tblHoofd.getItems(), klantId);
-            insertBestellingen(tblDessert.getItems(), klantId);
-        } else {
-            PreparedStatement prepUpdateKlant = Main.connection.prepareStatement("UPDATE Klant SET naam = ?, GroepsNaam = ?, TijdstipId = ? WHERE Id = ?");
-            prepUpdateKlant.setString(1, txtNaam.getText());
-            if (txtGroepsnaam.getText() != null || !Objects.equals(txtGroepsnaam.getText(), "")) {
-                prepUpdateKlant.setString(2, txtGroepsnaam.getText());
-            }
-            prepUpdateKlant.setInt(3, cbxTijdstip.getSelectionModel().getSelectedItem().getId());
-            prepUpdateKlant.setInt(4, initData.getId());
-            System.out.println(prepUpdateKlant.executeUpdate());
-            updateBestelling(tblHoofd);
-            updateBestelling(tblDessert);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
     }
 
-    private void updateBestelling(TableView<Bestelling> tableView) throws SQLException {
-        PreparedStatement prepUpdateBestelling = Main.connection.prepareStatement("UPDATE GerechtBestelling SET Aantal = ? WHERE BestellingsId = ?");
-        for (Bestelling b :
-                tableView.getItems()) {
-            if (b.getId() != null) {
-                prepUpdateBestelling.setInt(1, b.getAantal());
-                prepUpdateBestelling.setInt(2, b.getId());
-                prepUpdateBestelling.executeUpdate();
-            } else if (b.getAantal() != 0) {
-                ObservableList<Bestelling> best = FXCollections.observableArrayList();
-                best.add(b);
-                insertBestellingen(best, initData.getId());
+    private void insertBestellingen(ObservableList<Bestelling> bestellings, int klantId) {
+        PreparedStatement prepBestelling = null;
+        try {
+            prepBestelling = Main.connection.prepareStatement("INSERT INTO GerechtBestelling VALUES (?,NULL, ?, ?)");
+            for (Bestelling g :
+                    bestellings) {
+                if (g.getAantal() != 0) {
+                    prepBestelling.setInt(1, g.getGerecht().getId());
+                    prepBestelling.setInt(2, klantId);
+                    prepBestelling.setInt(3, g.getAantal());
+                    prepBestelling.executeUpdate();
+                }
             }
-        }
-    }
-
-    private void insertBestellingen(ObservableList<Bestelling> bestellings, int klantId) throws SQLException {
-        PreparedStatement prepBestelling = Main.connection.prepareStatement("INSERT INTO GerechtBestelling VALUES (?,NULL, ?, ?)");
-        for (Bestelling g :
-                bestellings) {
-            if (g.getAantal() != 0) {
-                prepBestelling.setInt(1, g.getGerecht().getId());
-                prepBestelling.setInt(2, klantId);
-                prepBestelling.setInt(3, g.getAantal());
-                prepBestelling.executeUpdate();
-            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -438,5 +453,62 @@ public class AddKlantController extends Controller {
 
         }).start();
 
+    }
+
+    private boolean check_everything() {
+        txtNaam.setStyle("");
+        txtGroepsnaam.setStyle("");
+        tblDessert.setStyle("");
+        tblHoofd.setStyle("");
+        System.out.println("anyone there???");
+        int fouten = 0;
+        if (txtNaam.getText().equals("")) {
+            System.out.println("in here");
+            txtNaam.setStyle("-fx-border-color: red; -fx-border-width: 3px;");
+            fouten++;
+            new Thread(() -> {
+                JOptionPane.showMessageDialog(null, "er is geen naam ingegeven", "Fout", JOptionPane.WARNING_MESSAGE);
+            });
+        }
+
+        if (txtGroepsnaam.getText().equals("")) {
+            txtGroepsnaam.setStyle("-fx-border-color: red;-fx-border-width: 3px");
+            fouten++;
+            new Thread(() -> {
+                JOptionPane.showMessageDialog(null, "er is geen groepsnaam ingegeven", "Fout", JOptionPane.WARNING_MESSAGE);
+            });
+        }
+
+        int aantalHoofd = 0;
+        for (Bestelling bestelling : tblHoofd.getItems()) {
+            aantalHoofd += bestelling.getAantal();
+        }
+        int aantaldes = 0;
+        for (Bestelling bestelling : tblDessert.getItems()) {
+            aantaldes += bestelling.getAantal();
+        }
+        if (aantalHoofd == 0) {
+            tblHoofd.setStyle("-fx-border-color: red; -fx-border-width: 3px;");
+            fouten++;
+            new Thread(() -> {
+                JOptionPane.showMessageDialog(null, "er zijn geen hoofdgerechten ingegeven", "Fout", JOptionPane.WARNING_MESSAGE);
+            });
+        }
+        if (aantaldes == 0) {
+            tblDessert.setStyle("-fx-border-color: red; -fx-border-width: 3px;");
+            fouten++;
+            new Thread(() -> {
+                JOptionPane.showMessageDialog(null, "er zijn geen desserten ingegeven", "Fout", JOptionPane.WARNING_MESSAGE);
+            });
+        }
+        if (aantaldes != aantalHoofd) {
+            tblHoofd.setStyle("-fx-border-color: red; -fx-border-width: 3px;");
+            tblDessert.setStyle("-fx-border-color: red; -fx-border-width: 3px;");
+            fouten++;
+            new Thread(() -> {
+                JOptionPane.showMessageDialog(null, "het aantal desserten is niet gelijk aan het aantal hoofdgerechten", "Fout", JOptionPane.WARNING_MESSAGE);
+            });
+        }
+        return !(fouten > 0);
     }
 }

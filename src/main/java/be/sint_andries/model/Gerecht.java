@@ -57,11 +57,15 @@ public class Gerecht implements Comparable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Gerecht) {
+        return obj instanceof Gerecht && naam.equals(((Gerecht) obj).naam);
+    }
 
-            return ((this.getId() == ((Gerecht) obj).getId()) && (this.naam.equals(((Gerecht) obj).naam)));
+    @Override
+    public int hashCode() {
+        if (naam != null) {
+            return (naam.hashCode());
         }
-        return false;
+        return super.hashCode();
     }
 
     @Override

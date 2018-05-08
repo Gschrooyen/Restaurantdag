@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<TabPane prefHeight="787.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.sint_andries.controller.ParentViewController">
+  <tabs>
+    <Tab closable="false" text="AddRestaurantdag">
+      <content>
+          <fx:include fx:id="restaurantdagview" source="AddRestaurantdagView.fxml" />
+      </content>
+    </Tab>
+    <Tab closable="false" disable="true" text="AddGerecht">
+      <content>
+          <fx:include fx:id="gerechtview" source="AddNewGerechtView.fxml" />
+      </content>
+    </Tab>
+  </tabs>
+</TabPane>
