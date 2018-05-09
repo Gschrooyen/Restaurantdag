@@ -10,8 +10,8 @@ import javafx.scene.control.TextField;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 // TODO: 29.03.18 functie voor toevoegen en volgende
@@ -20,14 +20,15 @@ public class AddNewGerechtViewController extends Controller {
 
     private ParentViewController parentViewController;
     @FXML
-    private TextField txtPrijs;
+    public TextField txtPrijs;
     @FXML
     private TextField txtNaam;
     @FXML
-    private CheckBox cbxDessert;
+    public CheckBox cbxDessert;
     @FXML
     private CheckBox cbxKind;
     private Gerecht initgerecht = null;
+    private Gerecht laatsteGerecht;
 
     public void Back(Event event) throws IOException {
         HelperMethods.ChangeScene(event, "be/sint_andries/view/GerechtOverzichtView.fxml");
@@ -35,7 +36,11 @@ public class AddNewGerechtViewController extends Controller {
 
     public void Overzicht(Event event) throws IOException {
         Opslaan();
-        Back(event);
+        if (laatsteGerecht.isDessert().get()) {
+            parentViewController.addDessert(laatsteGerecht);
+        } else {
+            parentViewController.addHoofdGerecht(laatsteGerecht);
+        }
 
     }
 
@@ -45,53 +50,62 @@ public class AddNewGerechtViewController extends Controller {
     }
 
     private void Opslaan() {
-        if (txtNaam.getText() == null | Objects.equals(txtNaam.getText(), "")) {
-            txtNaam.setStyle("-fx-border-color: red; -fx-border-width: 3px;");
-            txtNaam.requestFocus();
-        } else if ((txtPrijs.getText() == null | Objects.equals(txtPrijs.getText(), "")) && !cbxDessert.isSelected()) {
-            txtPrijs.setStyle("-fx-border-color: red; border-width: 3px;");
-            txtPrijs.requestFocus();
+        if (initgerecht == null) {
+            try {
+                PreparedStatement prep = Main.connection.prepareStatement("INSERT INTO Gerecht VALUES (?,?,?,?, ?)");
+                prep.setString(2, txtNaam.getText());
+                if (!cbxKind.isSelected()) {
+                    prep.setInt(3, cbxDessert.isSelected() ? 1 : 0);
+                } else {
+                    prep.setInt(3, 0);
+                }
+                prep.setInt(4, cbxKind.isSelected() ? 1 : 0);
+                if (!cbxDessert.isSelected()) {
+                    prep.setDouble(5, Double.parseDouble(txtPrijs.getText()));
+                }
+                prep.execute();
+
+                //get the newly added dish from the databse so we know the ID.
+                prep = Main.connection.prepareStatement("SELECT * FROM Gerecht WHERE Naam = ? AND Prijs = ? AND IsKind = ?");
+                prep.setString(1, txtNaam.getText());
+                if (!cbxDessert.isSelected()){
+                    prep.setDouble(2, Double.parseDouble(txtPrijs.getText()));
+                }
+                prep.setBoolean(3, cbxKind.isSelected());
+                ResultSet rs = prep.executeQuery();
+
+                if (rs.next()){
+                    if (rs.getBoolean("IsDessert")){
+                        laatsteGerecht = new Gerecht(rs.getString("Naam"), rs.getInt("Id"));
+                    }else {
+                        laatsteGerecht = new Gerecht(rs.getString("Naam"), rs.getDouble("Prijs"), rs.getBoolean("IsKind"), rs.getInt("Id"));
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
         } else {
-            if (initgerecht == null) {
-                try {
-                    PreparedStatement prep = Main.connection.prepareStatement("INSERT INTO Gerecht VALUES (?,?,?,?, ?)");
-                    prep.setString(2, txtNaam.getText());
-                    if (!cbxKind.isSelected()) {
-                        prep.setInt(3, cbxDessert.isSelected() ? 1 : 0);
-                    }else {
-                        prep.setInt(3, 0);
-                    }
-                    prep.setInt(4, cbxKind.isSelected() ? 1 : 0);
-                    if (!cbxDessert.isSelected()) {
-                        prep.setDouble(5, Double.parseDouble(txtPrijs.getText()));
-                    }
-                    prep.execute();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+            try {
+                PreparedStatement prep = Main.connection.prepareStatement("UPDATE Gerecht SET Naam = ?, IsDessert = ?, Prijs = ?, IsKind = ? WHERE Id = ?");
+                prep.setString(1, txtNaam.getText());
+                prep.setInt(4, cbxKind.isSelected() ? 1 : 0);
+                System.out.println(cbxKind.isSelected());
+                if (!cbxKind.isSelected()) {
+                    prep.setInt(2, cbxDessert.isSelected() ? 1 : 0);
+                } else {
+                    prep.setInt(2, 0);
                 }
 
-            } else {
-                try {
-                    PreparedStatement prep = Main.connection.prepareStatement("UPDATE Gerecht set Naam = ?, IsDessert = ?, Prijs = ?, IsKind = ? WHERE Id = ?");
-                    prep.setString(1, txtNaam.getText());
-                    prep.setInt(4, cbxKind.isSelected() ? 1 : 0);
-                    System.out.println(cbxKind.isSelected());
-                    if (!cbxKind.isSelected()) {
-                        prep.setInt(2, cbxDessert.isSelected() ? 1 : 0);
-                    }else {
-                        prep.setInt(2, 0);
-                    }
-
-                    if (!cbxDessert.isSelected()) {
-                        prep.setDouble(3, Double.parseDouble(txtPrijs.getText()));
-                    }
-                    prep.setInt(5, initgerecht.getId());
-                    System.out.println(initgerecht.getId());
-                    System.out.println(prep);
-                    System.out.println(prep.executeUpdate());
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                if (!cbxDessert.isSelected()) {
+                    prep.setDouble(3, Double.parseDouble(txtPrijs.getText()));
                 }
+                prep.setInt(5, initgerecht.getId());
+                System.out.println(initgerecht.getId());
+                System.out.println(prep);
+                System.out.println(prep.executeUpdate());
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -127,7 +141,7 @@ public class AddNewGerechtViewController extends Controller {
 
     }
 
-    public void init(ParentViewController parentViewController) {
+    void init(ParentViewController parentViewController) {
         this.parentViewController = parentViewController;
     }
 }

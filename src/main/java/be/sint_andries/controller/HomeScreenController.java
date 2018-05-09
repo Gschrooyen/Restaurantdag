@@ -41,6 +41,7 @@ public class HomeScreenController extends Controller {
                 ChangeScene(actionEvent, "be/sint_andries/view/ParentView.fxml");
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(null, "SelectRestaurantdagView.fxml", "IOException", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
             }
         }
     }

@@ -53,8 +53,12 @@ public class AddRestaurantdagViewController extends Controller {
         }
     }
 
-    public void nieuw(ActionEvent actionEvent){
+    public void nieuwHoofd(ActionEvent actionEvent){
+        parentViewController.niewHoofdgerecht();
+    }
 
+    public void nieuwDes(ActionEvent actionEvent){
+        parentViewController.niewDessert();
     }
 
     public void addHoofd() {
@@ -288,7 +292,9 @@ public class AddRestaurantdagViewController extends Controller {
     }
 
 
-    public void inti(ParentViewController parentViewController) {
+    public void init(ParentViewController parentViewController) {
         this.parentViewController = parentViewController;
     }
+
+
 }

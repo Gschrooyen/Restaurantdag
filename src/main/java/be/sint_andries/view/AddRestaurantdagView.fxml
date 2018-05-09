@@ -54,7 +54,7 @@
                                     </VBox.margin>
                                 </Button>
                                 <Button fx:id="btnVerwijderHoofd" mnemonicParsing="false" onAction="#delHoofd" text="Verwijderen" />
-                        <Button fx:id="btnNieuwHoofd" mnemonicParsing="false" prefHeight="26.0" prefWidth="75.0" text="Nieuw">
+                        <Button fx:id="btnNieuwHoofd" mnemonicParsing="false" onAction="#nieuwHoofd" prefHeight="26.0" prefWidth="75.0" text="Nieuw">
                            <VBox.margin>
                               <Insets top="30.0" />
                            </VBox.margin>
@@ -87,7 +87,7 @@
                                     </VBox.margin>
                                 </Button>
                                 <Button fx:id="btnVerwijderDes" mnemonicParsing="false" onAction="#delDes" text="Verwijderen" />
-                        <Button fx:id="btnNieuwDes" mnemonicParsing="false" prefHeight="26.0" prefWidth="75.0" text="Nieuw">
+                        <Button fx:id="btnNieuwDes" mnemonicParsing="false" onAction="#nieuwDes" prefHeight="26.0" prefWidth="75.0" text="Nieuw">
                            <VBox.margin>
                               <Insets top="30.0" />
                            </VBox.margin>
